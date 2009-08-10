@@ -1,7 +1,11 @@
 import java.util.HashMap;
 import java.util.ArrayList;
+
 import java.io.FileReader;
 import java.io.BufferedReader;
+
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 
 public class Indexer {
   public static void main(String[] args) {
@@ -22,7 +26,7 @@ public class Indexer {
       indexFile(filename);
     } /* for each file */
     
-    printIndex();
+    saveIndex();
   }
   
   private boolean indexFile(String filename) {
@@ -58,14 +62,19 @@ public class Indexer {
     return true;
   }
   
-  private void printIndex() {
-    /* print out hash (in Ruby this would be `p index`) */
+  private void saveIndex() {
+    /* save to a file per word */
     for (String word : index.keySet()) {
-      System.out.print(word + " => [");
-      for (String filename : index.get(word)) {
-        System.out.print(" " + filename);
-      } /* for each file in which this word appears */
-      System.out.println(" ]");
+      try {
+        BufferedWriter file = new BufferedWriter(new FileWriter(word));
+        for (String filename : index.get(word)) {
+          file.write(filename + "\n");
+        } /* for each file in which this word appears */
+        file.flush();
+        file.close();
+      } catch (java.io.IOException IOERR) {
+        System.err.println("Unable to save index for \"" + word + "\" -- " + IOERR);
+      }
     } /* for each word */
   }
 }
