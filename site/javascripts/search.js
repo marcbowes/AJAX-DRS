@@ -23,10 +23,16 @@ function find(string) {
 function find_real(string) {
   var terms = string.split(/\s/);
   
+  var mashup = "<dl>";
+  
   /* for some reason a foreach prints integers? */
   for (i = 0; i < terms.length; i++) {
-    alert("term: " + terms[i] + " -- \n" + indices[terms[i]]);
+    mashup += "<dt>" + terms[i] + "</dt><dd>";
+    mashup += (indices[terms[i]] != null ? indices[terms[i]].join(", ") : "<em>no results</em>");
+    mashup += "</dd>";
   }
+  
+  results(mashup + "</dl>");
 }
 
 function tapIndex(word, searchString) {
