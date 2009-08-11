@@ -7,6 +7,16 @@ import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 public class Indexer {
   public static void main(String[] args) {
     new Indexer();
@@ -30,6 +40,44 @@ public class Indexer {
   }
   
   private boolean indexFile(String filename) {
+    try {
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      DocumentBuilder db = dbf.newDocumentBuilder();
+    
+      Document dom = db.parse(filename);
+      Element root = dom.getDocumentElement();
+      
+      NodeList nodeList = root.getChildNodes();
+      for(int i = 0; i < nodeList.getLength(); i++) {
+        Node childNode = nodeList.item(i);
+        if (childNode.getNodeType() == 1) {
+            /* split by whitespace into an array of words */
+          String[] words = childNode.getFirstChild().getNodeValue().split("\\s");
+          
+          /* we now need to store that the current file contains the current word */
+          for (String word : words) {
+            /* either load or create list */
+            ArrayList<String> list;         
+            if (index.containsKey(word)) {
+              list = index.get(word);
+            } else {
+              list = new ArrayList<String>();
+              index.put(word, list);
+            }
+            
+            /* blindly add filename FIXME: check duplicates */
+            list.add(filename);
+          } /* for each word */
+        }
+      }
+         
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+  
+  private boolean indexFile__(String filename) {
     try {
       /* load the file, and read each line */
       BufferedReader file = new BufferedReader(new FileReader(filename));    
