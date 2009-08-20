@@ -28,7 +28,12 @@ function find_real(string) {
   /* for some reason a foreach prints integers? */
   for (i = 0; i < terms.length; i++) {
     mashup += "<dt>" + terms[i] + "</dt><dd>";
-    mashup += (indices[terms[i]] != null ? indices[terms[i]].join(", ") : "<em>no results</em>");
+    var index = indices[terms[i]];
+    if (index) {
+      for (hash in index) {
+        mashup += hash + ":" + index[hash];
+      }
+    }
     mashup += "</dd>";
   }
   
@@ -40,7 +45,14 @@ function tapIndex(word, searchString) {
     try {
       $.get("indices/" + word, null, function(index) {
         var listings = index.split("\n");
-        indices[word] = listings;
+        var index = new Array();
+        for (i = 0; i < listings.length; i++) {
+          var documentToCount = listings[i].split(":");
+          if (documentToCount.length == 2) {
+            index[documentToCount[0]] = documentToCount[1];
+          }
+        }
+        indices[word] = index;
         tapComplete(word, searchString);
       });
     } catch (error) {
