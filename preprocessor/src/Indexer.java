@@ -25,15 +25,15 @@ public class Indexer {
     new Indexer();
   }
   
-  private HashMap<String, ArrayList<String>> index;
+  private HashMap<String, HashMap<String, Integer>> index;
   
   public Indexer() {
-    /* hash of: { word => [files, in, which, it, appears], ... } */
-    index = new HashMap<String, ArrayList<String>>();
+    /* hash of: { word => { file => count }, ... } */
+    index = new HashMap<String, HashMap<String, Integer>>();
     
     FilenameFilter filter = new FilenameFilter() {
       public boolean accept(File file, String name) {
-        return name.endsWith(".metadata") && !file.isDirectory();
+        return name.endsWith(".metadata");
       }
     };
     
@@ -56,79 +56,54 @@ public class Indexer {
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
     
-      Document dom = db.parse(filename);
+      Document dom = db.parse("../data/" + filename);
       Element root = dom.getDocumentElement();
       
       NodeList nodeList = root.getChildNodes();
       for(int i = 0; i < nodeList.getLength(); i++) {
         Node childNode = nodeList.item(i);
         if (childNode.getNodeType() == 1) {
-            /* split by whitespace into an array of words */
+          /* split by whitespace into an array of words */
           String[] words = childNode.getFirstChild().getNodeValue().split("\\s");
           
           /* we now need to store that the current file contains the current word */
           for (String word : words) {
-            /* either load or create list */
-            ArrayList<String> list;         
-            if (index.containsKey(word)) {
-              list = index.get(word);
+            HashMap<String, Integer> documentToCount;
+            if(index.containsKey(word)) {
+              documentToCount = index.get(word);
             } else {
-              list = new ArrayList<String>();
-              index.put(word, list);
+              documentToCount = new HashMap<String, Integer>();
+              index.put(word, documentToCount);
             }
             
-            /* blindly add filename FIXME: check duplicates */
-            list.add(filename);
+            Integer count;
+            if(documentToCount.containsKey(filename)) {
+              count = documentToCount.get(filename);
+            } else {
+              count = Integer.valueOf(0);
+            }
+            count = Integer.valueOf(count.intValue() + 1);
+            documentToCount.put(filename, count);
           } /* for each word */
         }
       }
          
       return true;
     } catch (Exception e) {
+      System.err.println("Unable to create index for \"" + filename + "\" -- " + e);
+      e.printStackTrace();
       return false;
     }
-  }
-  
-  private boolean indexFile__(String filename) {
-    try {
-      /* load the file, and read each line */
-      BufferedReader file = new BufferedReader(new FileReader(filename));    
-      String line;
-      while ((line = file.readLine()) != null) {
-        /* split this line by whitespace into an array fo words */
-        String[] words = line.split("\\s");
-        
-        /* we now need to store that the current file contains the current word */
-        for (String word : words) {
-          /* either load or create list */
-          ArrayList<String> list;         
-          if (index.containsKey(word)) {
-            list = index.get(word);
-          } else {
-            list = new ArrayList<String>();
-            index.put(word, list);
-          }
-          
-          /* blindly add filename FIXME: check duplicates */
-          list.add(filename);
-        } /* for each word in the line */
-      } /* for each line in the file */
-    } catch (java.io.FileNotFoundException ENOENT) {
-      return false;
-    } catch (java.io.IOException IOERR) {
-      return false;
-    }
-    
-    return true;
   }
   
   private void saveIndex() {
     /* save to a file per word */
     for (String word : index.keySet()) {
       try {
-        BufferedWriter file = new BufferedWriter(new FileWriter(word));
-        for (String filename : index.get(word)) {
-          file.write(filename + "\n");
+        BufferedWriter file = new BufferedWriter(new FileWriter("../site/indices/" + word));
+        HashMap<String, Integer> documentToCount = index.get(word);
+        for (String filename : documentToCount.keySet()) {
+          file.write(filename + ":" + documentToCount.get(filename) + "\n");
         } /* for each file in which this word appears */
         file.flush();
         file.close();
