@@ -22,22 +22,25 @@ function find(string) {
 
 function find_real(string) {
   var terms = string.split(/\s/);
-  
-  var mashup = "<dl>";
+  var items = new Array();
   
   /* for some reason a foreach prints integers? */
   for (i = 0; i < terms.length; i++) {
-    mashup += "<dt>" + terms[i] + "</dt><dd>";
     var index = indices[terms[i]];
-    if (index) {
-      for (hash in index) {
-        mashup += hash + ":" + index[hash];
+    for (item in index) {
+      if (!items[item]) {
+        items[item] = index[item];
+      } else {
+        items[item] += index[item];
       }
     }
-    mashup += "</dd>";
   }
   
-  results(mashup + "</dl>");
+  var result = "";
+  for (item in items) {
+    result += item + ": " + items[item] + "<br/>";
+  }
+  results(result);
 }
 
 function tapIndex(word, searchString) {
@@ -49,7 +52,7 @@ function tapIndex(word, searchString) {
         for (i = 0; i < listings.length; i++) {
           var documentToCount = listings[i].split(":");
           if (documentToCount.length == 2) {
-            index[documentToCount[0]] = documentToCount[1];
+            index[documentToCount[0]] = parseInt(documentToCount[1]);
           }
         }
         indices[word] = index;
