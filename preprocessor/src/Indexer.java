@@ -1,6 +1,9 @@
 import java.util.HashMap;
 import java.util.ArrayList;
 
+import java.io.File;
+import java.io.FilenameFilter;
+
 import java.io.FileReader;
 import java.io.BufferedReader;
 
@@ -28,13 +31,22 @@ public class Indexer {
     /* hash of: { word => [files, in, which, it, appears], ... } */
     index = new HashMap<String, ArrayList<String>>();
     
-    /* filenames to load, typically would be an entire directory? */
-    String[] filenames = { "sample.txt", "sample2.txt" };
+    FilenameFilter filter = new FilenameFilter() {
+      public boolean accept(File file, String name) {
+        return name.endsWith(".metadata") && !file.isDirectory();
+      }
+    };
     
-    /* process each file */
-    for (String filename : filenames) {
-      indexFile(filename);
-    } /* for each file */
+    File dir = new File("../data");
+    String[] files = dir.list(filter);
+    
+    if (files == null) {
+      System.err.println("no such file or directory ../data");
+    } else {
+      for (int i = 0; i < files.length; i++) {
+        indexFile(files[i]);
+      }
+    }
     
     saveIndex();
   }
