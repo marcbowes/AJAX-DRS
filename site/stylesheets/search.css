@@ -1,0 +1,22 @@
+div#wrapper {
+  margin: auto;
+  width: 500px;
+}
+
+div#search {
+  padding: 10px;
+}
+
+div#search h1 {
+  font-style: italic;
+  font-family: Verdana, Arial, Sans-Serif;
+}
+
+div#search_results ul {
+  list-style: none;
+}
+
+div#search_results span.rank {
+  float:right;
+  font-size: small;
+}

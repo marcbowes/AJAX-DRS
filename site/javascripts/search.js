@@ -36,10 +36,13 @@ function find_real(string) {
     }
   }
   
-  var result = "";
+  var result = "<ul>";
   for (item in items) {
-    result += item + ": " + items[item] + "<br/>";
+    var shortname = item.split(".metadata")[0];
+    result += "<li><a href=\"../data/" + shortname + "\" class=\"result\">" + shortname + "</a>";
+    result += "<span class=\"rank\">" + items[item] + "</span></li>";
   }
+  result += "</ul>";
   results(result);
 }
 

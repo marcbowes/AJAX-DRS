@@ -9,17 +9,25 @@
   <script src="javascripts/jquery.js" type="text/javascript"></script>
   <script src="javascripts/search.js" type="text/javascript"></script>
   
+  <link href="stylesheets/search.css" rel="stylesheet" type="text/css">
+  
 </head>
 
 <body>
 
+  <div id="wrapper">
+  
   <div id="search">
-    <input id="search_terms" name="search[terms]" type="text" />
+    <h1>Search the Repository</h1>
+    
+    <input id="search_terms" name="search[terms]" type="text" style="width: 360px;" />
     <input id="search_submit" type="submit" />
     
     <span id="search_feedback"></span>
     
     <div id="search_results"></div>
+  </div>
+  
   </div>
 
 </body>
