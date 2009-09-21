@@ -69,7 +69,7 @@ function tapIndex(word, searchString) {
         }
         indices[word] = index;
         tapComplete(word, searchString);
-      });
+      }, "text");
     } catch (error) {
       tapComplete(word, searchString);
     }
