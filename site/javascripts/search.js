@@ -11,11 +11,14 @@ $(function() {
 });
 
 function find(string) {
-  string = string.toLowerCase().replace(/[^\d\w]/g, "");
+  string = string.toLowerCase();
   var terms = string.split(/[\s-\/]/);
+  for (i = 0; i < terms.length; i++) {
+    terms[i] = terms[i].replace(/[^\d\w]/g, "")
+  }
+  
   untappedIndices = terms.length;
   
-  /* for some reason a foreach prints integers? */
   for (i = 0; i < terms.length; i++) {
     tapIndex(terms[i], string);
   }
@@ -23,6 +26,9 @@ function find(string) {
 
 function find_real(string) {
   var terms = string.split(/[\s-\/]/);
+  for (i = 0; i < terms.length; i++) {
+    terms[i] = terms[i].replace(/[^\d\w]/g, "")
+  }
   var items = new Array();
   
   /* for some reason a foreach prints integers? */
