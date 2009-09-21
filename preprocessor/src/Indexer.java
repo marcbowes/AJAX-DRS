@@ -64,7 +64,7 @@ public class Indexer {
         Node childNode = nodeList.item(i);
         if (childNode.getNodeType() == 1) {
           /* split by whitespace into an array of words */
-          String[] words = childNode.getFirstChild().getNodeValue().split("\\s");
+          String[] words = childNode.getFirstChild().getNodeValue().split("[\\s-/]");
           
           /* we now need to store that the current file contains the current word */
           for (String word : words) {
