@@ -10,12 +10,17 @@ $(function() {
   });
 });
 
-function find(string) {
-  string = string.toLowerCase();
+function get_terms(string) {
   var terms = string.split(/[\s-\/]/);
   for (i = 0; i < terms.length; i++) {
     terms[i] = terms[i].replace(/[^\d\w]/g, "")
   }
+  return terms;
+}
+
+function find(string) {
+  string = string.toLowerCase();
+  var terms = get_terms(string);
   
   untappedIndices = terms.length;
   
@@ -25,10 +30,7 @@ function find(string) {
 }
 
 function find_real(string) {
-  var terms = string.split(/[\s-\/]/);
-  for (i = 0; i < terms.length; i++) {
-    terms[i] = terms[i].replace(/[^\d\w]/g, "")
-  }
+  var terms = get_terms(string);
   var items = new Array();
   
   /* for some reason a foreach prints integers? */
