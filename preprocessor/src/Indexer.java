@@ -68,6 +68,11 @@ public class Indexer {
           
           /* we now need to store that the current file contains the current word */
           for (String word : words) {
+            /* downcase */
+            word = word.toLowerCase();
+            /* remove non alpha-numeric */
+            word = word.replaceAll("[^\\d\\w]", "");
+            
             HashMap<String, Integer> documentToCount;
             if(index.containsKey(word)) {
               documentToCount = index.get(word);
