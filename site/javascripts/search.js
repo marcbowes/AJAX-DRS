@@ -11,14 +11,13 @@ $(function() {
 });
 
 function find(string) {
-  string = string.toLowerCase();
+  string = string.toLowerCase().replace(/[^\d\w]/g, "");
   var terms = string.split(/[\s-\/]/);
   untappedIndices = terms.length;
   
   /* for some reason a foreach prints integers? */
   for (i = 0; i < terms.length; i++) {
-    var term = terms[i].replace(/^\d\w]/g, "");
-    tapIndex(term, string);
+    tapIndex(terms[i], string);
   }
 }
 
