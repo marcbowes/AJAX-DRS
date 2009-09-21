@@ -17,7 +17,8 @@ function find(string) {
   
   /* for some reason a foreach prints integers? */
   for (i = 0; i < terms.length; i++) {
-    tapIndex(terms[i], string);
+    var term = terms[i].replace(/^\d\w]/g, "");
+    tapIndex(term, string);
   }
 }
 
