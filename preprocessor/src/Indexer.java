@@ -78,6 +78,12 @@ public class Indexer {
             /* downcase */
             word = word.toLowerCase();
             
+            /* stem/canonicalize */
+            Stemmer s = new Stemmer();
+            s.add(word.toCharArray(), word.length());
+            s.stem();
+            word = s.toString();
+            
             HashMap<String, Integer> documentToCount;
             if(index.containsKey(word)) {
               documentToCount = index.get(word);
