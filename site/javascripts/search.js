@@ -11,7 +11,8 @@ $(function() {
 });
 
 function find(string) {
-  var terms = string.split(/\s/);
+  string = string.toLowerCase();
+  var terms = string.split(/[\s-\/]/);
   untappedIndices = terms.length;
   
   /* for some reason a foreach prints integers? */
@@ -21,7 +22,7 @@ function find(string) {
 }
 
 function find_real(string) {
-  var terms = string.split(/\s/);
+  var terms = string.split(/[\s-\/]/);
   var items = new Array();
   
   /* for some reason a foreach prints integers? */
