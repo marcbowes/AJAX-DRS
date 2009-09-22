@@ -13,7 +13,7 @@ $(function() {
 function get_terms(string) {
   var terms = string.split(/[\s-\/]/);
   for (i = 0; i < terms.length; i++) {
-    terms[i] = terms[i].replace(/[^\d\w]/g, "")
+    terms[i] = stemmer(terms[i].replace(/[^\d\w]/g, ""));
   }
   return terms;
 }
