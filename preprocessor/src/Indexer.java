@@ -25,11 +25,12 @@ public class Indexer {
     new Indexer();
   }
   
-  private HashMap<String, HashMap<String, Integer>> index;
+  private HashMap<String, HashMap<String, HashMap<String, Integer>>> index;
   
   public Indexer() {
-    /* hash of: { word => { file => count }, ... } */
-    index = new HashMap<String, HashMap<String, Integer>>();
+    /* hash of: { word => { file => count }, ... }, per metadata */
+    index = new HashMap<String, HashMap<String, HashMap<String, Integer>>>();
+    index.put("__root__", new HashMap<String, HashMap<String, Integer>>());
     
     FilenameFilter filter = new FilenameFilter() {
       public boolean accept(File file, String name) {
@@ -63,6 +64,11 @@ public class Indexer {
       for(int i = 0; i < nodeList.getLength(); i++) {
         Node childNode = nodeList.item(i);
         if (childNode.getNodeType() == 1) {
+          /* ensure that the metadata field is in the index */
+          String metafield = childNode.getNodeName().toLowerCase();
+          if(!index.containsKey(metafield))
+            index.put(metafield, new HashMap<String, HashMap<String, Integer>>());
+          
           /* split by whitespace into an array of words */
           String[] words = childNode.getFirstChild().getNodeValue().split("[\\s-/]");
           
@@ -85,11 +91,11 @@ public class Indexer {
             word = s.toString();
             
             HashMap<String, Integer> documentToCount;
-            if(index.containsKey(word)) {
-              documentToCount = index.get(word);
+            if(index.get("__root__").containsKey(word)) {
+              documentToCount = index.get("__root__").get(word);
             } else {
               documentToCount = new HashMap<String, Integer>();
-              index.put(word, documentToCount);
+              index.get("__root__").put(word, documentToCount);
             }
             
             Integer count;
@@ -114,10 +120,10 @@ public class Indexer {
   
   private void saveIndex() {
     /* save to a file per word */
-    for (String word : index.keySet()) {
+    for (String word : index.get("__root__").keySet()) {
       try {
         BufferedWriter file = new BufferedWriter(new FileWriter("../site/indices/" + word));
-        HashMap<String, Integer> documentToCount = index.get(word);
+        HashMap<String, Integer> documentToCount = index.get("__root__").get(word);
         for (String filename : documentToCount.keySet()) {
           file.write(filename + ":" + documentToCount.get(filename) + "\n");
         } /* for each file in which this word appears */
