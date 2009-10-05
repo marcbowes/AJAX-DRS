@@ -69,7 +69,7 @@ public class Searching {
             index.put(metafield, new HashMap<String, HashMap<String, Integer>>());
           
           /* split by whitespace into an array of words */
-          String[] words = childNode.getFirstChild().getNodeValue().replaceAll("[^\\d\\w]", "").split("[\\s]");
+          String[] words = childNode.getFirstChild().getNodeValue().replaceAll("[^\\d\\w]", " ").split("[\\s]");
           
           /* we now need to store that the current file contains the current word */
           for (String word : words) {
