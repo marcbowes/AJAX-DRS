@@ -20,14 +20,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class Indexer {
-  public static void main(String[] args) {
-    new Indexer();
-  }
-  
+public class Searching {
   private HashMap<String, HashMap<String, HashMap<String, Integer>>> index;
   
-  public Indexer() {
+  public Searching() {
     /* hash of: { word => { file => count }, ... }, per metadata */
     index = new HashMap<String, HashMap<String, HashMap<String, Integer>>>();
     index.put("__root__", new HashMap<String, HashMap<String, Integer>>());
@@ -38,11 +34,11 @@ public class Indexer {
       }
     };
     
-    File dir = new File("../data");
+    File dir = new File("../site/data");
     String[] files = dir.list(filter);
     
     if (files == null) {
-      System.err.println("no such file or directory ../data");
+      System.err.println("no such file or directory ../site/data");
     } else {
       for (int i = 0; i < files.length; i++) {
         indexFile(files[i]);

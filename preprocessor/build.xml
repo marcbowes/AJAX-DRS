@@ -29,7 +29,7 @@
     <!-- Put everything in ${build} into the Preprocessor-${DSTAMP}.jar file -->
     <jar jarfile="${dist}/Preprocessor-${DSTAMP}.jar" basedir="${build}">
       <manifest>
-        <attribute name="Main-Class" value="Indexer"/>
+        <attribute name="Main-Class" value="Preprocessor"/>
       </manifest>
     </jar>
   </target>

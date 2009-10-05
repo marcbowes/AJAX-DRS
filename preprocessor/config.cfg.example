@@ -1,9 +1,7 @@
-# #'d stuff is commented
-
-#Settings for website
+# Settings for website
 version 1.0
 representation title,date,blarg
 
-#Settings for preprocessor
+# Settings for preprocessor
 data ../site/data/
 site ../site/
