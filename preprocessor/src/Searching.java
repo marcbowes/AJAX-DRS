@@ -37,11 +37,11 @@ public class Searching {
       }
     };
     
-    File dir = new File("../site/data");
+    File dir = new File(options.get("path"));
     String[] files = dir.list(filter);
     
     if (files == null) {
-      System.err.println("no such file or directory ../site/data");
+      System.err.println("no such file or directory " + options.get("path"));
     } else {
       for (int i = 0; i < files.length; i++) {
         indexFile(files[i]);
@@ -56,7 +56,7 @@ public class Searching {
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
     
-      Document dom = db.parse("../data/" + filename);
+      Document dom = db.parse(options.get("path") + filename);
       Element root = dom.getDocumentElement();
       
       NodeList nodeList = root.getChildNodes();
@@ -132,7 +132,7 @@ public class Searching {
     /* save to a file per word */
     for (String word : index.get(metafield).keySet()) {
       try {
-        File _file = new File("../site/indices/" + (metafield == "__root__" ? "" : metafield));
+        File _file = new File(options.get("site") + "indices/" + (metafield == "__root__" ? "" : metafield));
         _file.mkdirs();
         BufferedWriter file = new BufferedWriter(new FileWriter(_file + "/" + word));
         HashMap<String, Integer> documentToCount = index.get(metafield).get(word);
