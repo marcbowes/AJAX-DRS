@@ -1,0 +1,134 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+
+body { 
+	/* more detailed font stack used to support more users across platforms */ 
+	font-family: "Helvetica Neue", Helvetica, Frutiger, "Frutiger Linotype", Univers, Calibri, "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Arial, sans-serif;
+	font-size: 62.5%;
+	color: #333;
+}
+
+h1, h2, h3, h4, .h2, .h3, .h4 { 
+	color: #333;
+	font-family: "Helvetica Neue", Helvetica, Frutiger, "Frutiger Linotype", Univers, Calibri, "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Arial, sans-serif;
+	font-weight: bold;
+}
+
+h1 { 
+	font-size: 2.4em;
+	letter-spacing: -1px;
+	margin: 0 0 18px 0;
+	font-weight: normal;
+}
+
+h2, .h2 {
+	font-size: 1.8em;
+	font-weight: bold;
+	margin: 0 0 18px 0;
+}
+
+h3, .h3 { 
+	font-size: 1.6em;
+	font-weight: bold;
+}
+
+h4, .h4 {
+	font-family: "Helvetica Neue", Helvetica, Frutiger, "Frutiger Linotype", Univers, Calibri, "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Arial, sans-serif;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.h2, .h3, .h4 {
+	display: block;
+}
+
+p, ul, ul, ol, dl, p, address {
+}
+
+p {
+	font-size: 1.2em;
+	line-height: 1.33em;
+	margin-bottom: 12px;
+}
+
+a, a:visited {
+	color: #09c;
+	text-decoration: none;
+}
+
+a:hover, a:active {
+	color: #000 !important;
+	text-decoration: underline;
+}
+
+a img {
+	border: none;
+	margin: 0; padding: 0;
+}
+
+address {
+	font-style: normal;
+}
+
+strong, .strong {
+	font-weight: bold;
+}
+
+em {
+	font-style: italic;
+}
+
+small {
+	font-size: 0.9em;
+}
+
+hr {
+	border: 1px solid #ccc;
+}
+
+.disabled {
+	color: #999;
+}
+
+.format {
+	font-size: 1.2em;
+	margin-bottom: 20px;
+}
+
+.format ul {
+	padding-left: 20px;
+	margin: 8px 0 12px 0;
+}
+
+ul#compatible-list li {
+	margin-bottom: 4px;
+}
+
+.download-icon {
+	background: url('../images/download-icon.png') no-repeat center left;
+	display: block;
+	font-size: 1.4em;
+	font-weight: bold;
+	line-height: 30px;
+	padding-left: 40px;
+}
+a.download-icon span {
+	clear: both;
+	display: block;
+	font-size: 0.8em;
+}

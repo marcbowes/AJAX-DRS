@@ -1,0 +1,104 @@
+body {
+	background-color: #ededed;
+	text-align: center;
+}
+
+html,body {height:100%;}
+
+div#frame {
+	background-color: #fff;
+	margin: 0 auto;
+	position: relative;
+	text-align: left;
+	width: 965px;
+	height: 100%;
+	min-height: 100%;
+	padding: 20px;
+}
+
+html>body #frame {height:auto;}
+
+div#heading{
+    text-align: center;
+}
+
+hr.top {
+	margin-bottom: 20px;
+}
+
+div#frame div {
+	padding-bottom: 10px;
+}
+
+div.layout {
+	padding: 0 15px;
+}
+div.layout div.col1, div.layout div.col2, div.layout div.col3 {
+	float: left;
+}
+
+div.layout-thirds div.col1, div.layout-thirds div.col2, div.layout-thirds div.col3 {
+	float: left;
+	width: 306px;
+	margin-right: 12px;
+}
+div.layout-thirds div.col3 {
+	margin-right: 0;
+}
+div.layout-two-thirds div.col1 {
+	float: left;
+	width: 630px;
+	margin-right: 12px;
+}
+div.layout-two-thirds div.col2 {
+	float: left;
+	width: 320px;
+}
+
+/* for safari */
+div#header, div#footer, div#content {
+	display: block;
+}
+
+.layout-thirds:after, .layout-thirds:after {
+    content: "."; 
+    display: block;
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+
+/* Hides from IE-mac \*/
+* html .layout {height: 1%;}
+.layout {
+	display: inline-block;
+}
+/* End hide from IE-mac */
+
+div#browse-options{
+    padding-bottom: 15px;
+}
+
+div#browse-results{
+    font-size:15px;
+    margin: 20px;
+}
+
+div#pages{
+    text-align: center;
+    font-size:15px;
+}
+
+ul ol{
+    text-align: left;
+}
+
+li{
+    text-align: left;
+}
+
+div.center{
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}

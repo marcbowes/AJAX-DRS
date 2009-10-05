@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+	<title> AJAX-DRS Browsing </title>
+	
+	<script src="javascripts/jquery.js" type="text/javascript"></script>
+	<script src="javascripts/jquery.ba-url.min.js" type="text/javascript"></script>
+  <script src="javascripts/meta.js" type="text/javascript"></script>  
+  <script src="javascripts/util.js" type="text/javascript"></script>  
+	<script src="javascripts/online.js" type="text/javascript"></script>
+	<script src="javascripts/browse.js" type="text/javascript"></script>
+	<script src="javascripts/reloadOnce.js" type="text/javascript"></script>	
+	
+	<!-- Style from tutorial at http://www.halmatferello.com/journal/pure-css-buttons/ -->
+	<link rel="stylesheet" href="css/reset.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/typography.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/layout.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/buttons.css" type="text/css" media="screen" />
+	
+</head>
+<body>
+	<div id = "frame">
+		<div id = "heading">
+			<h1> AJAX - DRS - Browsing </h1>
+			<h2> Browse By </h2>
+			<div id="browse-options"></div>
+		</div>
+		<hr>
+		<div id = "busy" class="center" style = "display: none;">
+			<h4>Checking for online updates...</h4>
+			<img src="images/loading.gif">
+		</div>
+		<div id="browse-results"></div>
+		<hr>
+		<div id="pages"></div>	
+	</div>
+</body>
+</html>
