@@ -21,9 +21,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class Searching {
+  private HashMap<String, String> options;
   private HashMap<String, HashMap<String, HashMap<String, Integer>>> index;
   
-  public Searching() {
+  public Searching(HashMap <String, String> options) {
+    this.options = options;
+    
     /* hash of: { word => { file => count }, ... }, per metadata */
     index = new HashMap<String, HashMap<String, HashMap<String, Integer>>>();
     index.put("__root__", new HashMap<String, HashMap<String, Integer>>());
