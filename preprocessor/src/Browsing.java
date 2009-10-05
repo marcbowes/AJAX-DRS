@@ -144,6 +144,8 @@ public class Browsing {
 	 */
 	private void writeSortedFiles() throws IOException {
 		// TODO Write sortedLists to files to be read by AJAX website.
+		boolean status = new File (options.get("site") + "javascripts/").mkdirs();
+		
 		File importFile = new File(options.get("site") + "javascripts/meta.js");
 		BufferedWriter writer1 = new BufferedWriter(new FileWriter(importFile));
 		writer1.write("var files = new Array();");
@@ -153,6 +155,7 @@ public class Browsing {
 			System.out.println("Writing \"" + key + "\" file " + filenum);
 			writer1.write("var " + key + " = new Array();\n");
 			writer1.write(key+"[" + filenum + "] = \"" + key + filenum + "\";\n");
+			status = new File(options.get("site") + "lists/").mkdirs();
 			File outFile = new File(options.get("site") + "lists/" + key + filenum);
 			BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
 			for(int i = 0; i < sortedLists.get(key).size(); i++){
