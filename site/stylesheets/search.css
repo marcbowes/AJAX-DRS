@@ -1,3 +1,7 @@
+div#wrapper {
+	margin: 20px;
+}
+
 div#search_results ul {
   list-style: none;
 }
@@ -6,4 +10,3 @@ div#search_results span.rank {
   float:right;
   font-size: small;
 }
-
