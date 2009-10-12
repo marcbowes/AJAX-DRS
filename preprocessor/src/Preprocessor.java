@@ -1,6 +1,10 @@
 import java.io.*;
 import java.util.HashMap;
 
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
 public class Preprocessor {
   private static HashMap<String, String> options;
   
@@ -17,25 +21,22 @@ public class Preprocessor {
 	 */
 	private static void parseOptions() {
 	  options = new HashMap<String, String>();
-	  
-		try {
-			File optionFile = new File("config.cfg");
-			BufferedReader reader = new BufferedReader(new FileReader(optionFile));	
-			String line = null;
-			//Go through options file reading in options.
-			while ((line=reader.readLine()) != null) {
-				if (line.startsWith("#") || line.length() <= 0) {
-					continue;
-				} else {
-					String delims = "[ ]+";
-					String [] tokens = line.split(delims);
-					options.put(tokens[0], tokens[1]);
+		try{
+			Document doc = parseXmlFile("config.xml", false);
+			Node root = doc.getFirstChild();
+
+			NodeList nodes = root.getChildNodes();
+			for(int j = 0; j < nodes.getLength(); j++){
+				Node n = nodes.item(j);
+				if(n.getNodeType() == 1){	
+					if(n.getFirstChild().getNodeValue().trim().length() > 0){					
+						options.put(n.getNodeName(), n.getFirstChild().getNodeValue());
+						//System.out.println(n.getNodeName() + " : " + n.getFirstChild().getNodeValue());
+					}			
 				}
 			}
-    } catch (FileNotFoundException e) {
-			System.err.println("Could not find the config.cfg file");
-		} catch (IOException e) {
-			System.err.println("Caught IOException: " + e.getMessage());
+		}catch(Exception e){
+			System.err.println(e);
 		} finally {
 		  /* DEFAULT OPTIONS */
 			
@@ -50,6 +51,27 @@ public class Preprocessor {
 			if (!options.containsKey("site")) {
 				options.put("site", "../site/");
 			}
+			
+			if (!options.containsKey("items_per_page")) {
+				options.put("items_per_page", "5");
+			}
 		}
+}
+
+public static Document parseXmlFile(String filename, boolean validating) {
+	try {
+		// Create a builder factory
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setValidating(validating);
+
+		// Create the builder and parse the file
+		Document doc = factory.newDocumentBuilder().parse(new File(filename));
+		return doc;
+	} catch (SAXException e) {
+		// A parsing error occurred; the xml input is not valid
+	} catch (ParserConfigurationException e) {
+	} catch (IOException e) {
 	}
+	return null;
+}
 }

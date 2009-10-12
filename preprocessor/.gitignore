@@ -1,4 +1,4 @@
 build/
 dist/
 sample*
-config.cfg
+config.xml

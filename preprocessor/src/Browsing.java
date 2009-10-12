@@ -22,13 +22,14 @@ import org.xml.sax.*;
 
 
 public class Browsing {	
-	private static final int RECORDS_PER_FILE = 5;
+	private int RECORDS_PER_FILE;
 	private Vector <Meta> files;
 	private HashMap <String,Vector<Meta>> sortedLists;
 	private HashMap <String,String> options;
 	
 	public Browsing(HashMap <String, String> options) throws IOException {
 		this.options = options;
+		RECORDS_PER_FILE = Integer.parseInt(options.get("items_per_page"));
 		System.out.println("Begin");
 		files = new Vector<Meta>();
 		sortedLists = new HashMap <String,Vector<Meta>>();

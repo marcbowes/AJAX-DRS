@@ -1,0 +1,13 @@
+.button-selected {
+				font-family: Verdana, Arial, sans-serif;
+                display: inline-block;
+                background: #950000 url('../images/bg-button-red.gif') top left repeat-x !important;
+								border: 1px solid #940000 !important;
+                padding: 4px 7px 4px 7px !important;
+                color: #fff !important;
+                font-size: 11px !important;
+                cursor: pointer;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+								border-radius: 4px;
+							}

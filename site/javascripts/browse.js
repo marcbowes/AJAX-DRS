@@ -1,17 +1,20 @@
 /* Create sortable buttons */
 $(document).ready(function() {
+	fetchData();
 	createSorts();
   //Dynamically reloads info based on fragments.
   $.fragmentChange(true);
   $(document).bind("fragmentChange.page", function() {
-      var meta = $.fragment()["page"].split(":");
-      if($.fragment()["type"] == "meta"){
-          loadMeta(meta[0],meta[1]);
-          return false;
-      }else{
-          loadSort(meta[1],meta[0]);
-          return false;
-      }
+      if($.fragment()["page"] != null){
+				var meta = $.fragment()["page"].split(":");
+	      if($.fragment()["type"] == "meta"){
+	          loadMeta(meta[0],meta[1]);
+	          return false;
+	      }else if($.fragment()["type"] == "sort"){
+	          loadSort(meta[1],meta[0]);
+	          return false;
+	      }
+			}
   });
   
   if ($.fragment()["page"]){
@@ -25,23 +28,9 @@ $(document).ready(function() {
 function createSorts() {
   for(file in files){
       $("#browse-options").append(
-          "<a href=\"#\" class=\"green-button pcb\" onclick=\"setFrag('" + files[file][0] + "' , '" + capitalise(file) + "'); return false;\"> <span>" + capitalise(file) + "</span> </a>"
+          " <a id=\"" + file + "\" class=\"button\" href=\"#page=" + capitalise(file) + ":" +  files[file][0] + "&type=sort\" class=\"green-button pcb\"> <span>" + capitalise(file) + "</span> </a>"
         );
   }  
-}
-
-/*
-	Method to set the page fragment 
-*/
-function setFrag(file,sort_by){
-    $.setFragment({ "page" : (sort_by + ":" + file), "type" : "sort"});
-}
-
-/* 
-	Method to set the page fragment based on a metaFile
-*/
-function metaFrag(metafile, locality){
-    $.setFragment({ "page" : metafile + ":" + locality, "type" : "meta"});
 }
 
 var print = ""; //Temp variable used for output.
@@ -127,8 +116,17 @@ function createCombinedList(file, sort_by){
 	Need to work out which files are needed, then build those lists and take what is needed from each.
 */
 function loadSort(file, sort_by){
-    print = "";
-    print+=("<h2>" + sort_by + "</h2><br/>");
+		for(durr in files){
+			if(durr == uncapitalise(sort_by)){
+				$("#" + durr).removeClass("button").addClass("button-selected");
+			}else{
+				$("#" + durr).removeClass("button-selected").addClass("button");
+			}
+		}
+
+    		
+		print = "";
+    //print+=("<h2>" + sort_by + "</h2><br/>");
 		//work out what offline lists are needed.
 		//To do this, we find the starting point then see if the next file is needed.
 		//To find the starting point, 
@@ -179,7 +177,7 @@ function loadSort(file, sort_by){
 		for(i = start; i < startList.length; i++){
 			combinedList.push(startList[i]);
 			count = count+1;
-			if(count >= 5){
+			if(count >= pageSize){
 				break;
 			}
 		}
@@ -191,7 +189,7 @@ function loadSort(file, sort_by){
 			for(i = 0; i < nextList.length; i++){
 				combinedList.push(nextList[i]);
 				count = count+1;
-				if(count >= 5){
+				if(count >= pageSize){
 					break;
 				}
 			}
@@ -206,13 +204,14 @@ function loadSort(file, sort_by){
 		print+=("<ol start=\"" + ((file.substring(file.length-1, file.length)*pageSize) + 1) + "\">");
     for(i = 0; i < combinedList.length; i++){
 		      
-        if(current_value != combinedList[i]["sorted_field"]){
-            current_value = combinedList[i]["sorted_field"];
-            print+=("<h4>" + current_value + "</h4>");
-        }
+        print+=("<li><a href=\"#page=" + combinedList[i]["file"] + ":" +  combinedList[i]["locality"] + "&type=meta\"><h4>" + combinedList[i]["representation"] + "</h4>");
+				
+				print+=("<small>" + sort_by + " : " + combinedList[i]["sorted_field"]  + "</small>")
+				
+				print+=("</a></li>");
     
-        var line = "<li> <a href=\"#\" onclick=\"metaFrag('" + combinedList[i]["file"] + "' , '" + combinedList[i]["locality"] + "'); return false;\">" + combinedList[i]["representation"] + "</a></li>";
-        print+=(line);           
+        //var line = "<li> <a href=\"#page=" + combinedList[i]["file"] + ":" +  combinedList[i]["locality"] + "&type=meta\">" + combinedList[i]["representation"] + "</a></li>";
+        //print+=(line);           
     
     }
     
@@ -221,20 +220,20 @@ function loadSort(file, sort_by){
     sort_by = uncapitalise(sort_by)
     
     //Pages
-    $("#pages").html("Page:<br/>");
+    $("#pages").html("");
     for(i = 0;i < files[sort_by].length; i++){
         if(i == parseInt(file[file.length-1])){
-            $("#pages").append((i+1) + " ")
+            $("#pages").append("<a class=\"current\"> " + (i+1) + "</a>")
         }else{
-            $("#pages").append("<a href=\"#\" onclick=\"setFrag('" + files[sort_by][i] + "' , '" + capitalise(sort_by) + "'); return false;\">" + (i+1) + "</a> ")
+            $("#pages").append("<a class=\"number\" href=\"#page=" + capitalise(sort_by) + ":" +  files[sort_by][i] + "&type=sort\">" + (i+1) + "</a> ")
         }
     }
 		if(extraPages[sort_by] != null){
 			for(i = files[sort_by].length; i < (extraPages[sort_by].length + files[sort_by].length); i++){
 				if(i == parseInt(file[file.length-1])){
-	          $("#pages").append((i+1) + " ")
+	          $("#pages").append("<a class=\"current\">" + (i+1) + "</a>")
 	      }else{
-	          $("#pages").append("<a href=\"#\" onclick=\"setFrag('" + extraPages[sort_by][i - (files[sort_by].length)] + "' , '" + capitalise(sort_by) + "'); return false;\">" + (i+1) + "</a> ")
+	          $("#pages").append("<a class=\"number\" href=\"#page=" + capitalise(sort_by) + ":" +  extraPages[sort_by][i - (files[sort_by].length)] + "&type=sort\">" + (i+1) + "</a> ")
 	      }
 			}
 		}
