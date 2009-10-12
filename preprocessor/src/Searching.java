@@ -33,20 +33,30 @@ public class Searching {
     File dir = new File(options.get("path"));
     String[] files = dir.list(filter);
     
-    BufferedWriter list = new BufferedWriter(new FileWriter(options.get("site") + "indices/.list"));
+    File _file = new File(options.get("site") + "lists");
+    _file.mkdirs();
+    BufferedWriter ids = new BufferedWriter(new FileWriter(_file + "/identifiers"));
+    BufferedWriter idx = new BufferedWriter(new FileWriter(_file + "/indices"));
     
     if (files == null) {
       System.err.println("no such file or directory " + options.get("path"));
     } else {
       for (int i = 0; i < files.length; i++) {
-        list.write(i + ":" + files[i] + "\n");
+        ids.write(i + ":" + files[i] + "\n");
         indexFile(files[i]);
       }
     }
     
     saveIndex();
-    list.flush();
-    list.close();
+    
+    for (String word : index.get("__root__").keySet()) {
+      idx.write(word + "\n");
+    }
+    
+    ids.flush();
+    ids.close();
+    idx.flush();
+    idx.close();
   }
   
   private boolean indexFile(String filename) {
