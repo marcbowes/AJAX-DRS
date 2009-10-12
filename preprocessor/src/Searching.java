@@ -1,14 +1,7 @@
 import java.util.HashMap;
 import java.util.ArrayList;
 
-import java.io.File;
-import java.io.FilenameFilter;
-
-import java.io.FileReader;
-import java.io.BufferedReader;
-
-import java.io.FileWriter;
-import java.io.BufferedWriter;
+import java.io.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,7 +17,7 @@ public class Searching {
   private HashMap<String, String> options;
   private HashMap<String, HashMap<String, HashMap<String, Integer>>> index;
   
-  public Searching(HashMap <String, String> options) {
+  public Searching(HashMap <String, String> options) throws IOException {
     this.options = options;
     
     /* hash of: { word => { file => count }, ... }, per metadata */
@@ -40,15 +33,20 @@ public class Searching {
     File dir = new File(options.get("path"));
     String[] files = dir.list(filter);
     
+    BufferedWriter list = new BufferedWriter(new FileWriter(options.get("site") + "indices/.list"));
+    
     if (files == null) {
       System.err.println("no such file or directory " + options.get("path"));
     } else {
       for (int i = 0; i < files.length; i++) {
+        list.write(i + ":" + files[i] + "\n");
         indexFile(files[i]);
       }
     }
     
     saveIndex();
+    list.flush();
+    list.close();
   }
   
   private boolean indexFile(String filename) {
