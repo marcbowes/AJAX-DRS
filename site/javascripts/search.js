@@ -65,15 +65,21 @@ function find_real(string) {
     var index = indices[terms[i][0]][terms[i][1]];
     for (item in index) {
       if (!items[item]) {
-        items[item] = index[item];
-      } else {
-        items[item] += index[item];
+        items[item] = new Array();
       }
+      items[item].push(index[item]);
     }
   }
   
 	var result = "<table>";
   for (item in items) {
+    var sum = 0;
+    for (i = 0; i < items[item].length; i++) {
+      var count = items[item][i];
+      sum += count;
+    }
+    items[item] = sum / (Math.sqrt(terms.length) * Math.sqrt(10));
+    
     var shortname = item.split(".metadata")[0];
     result += "<tr><td><a href=\"data/" + shortname + "\" class=\"result\">" + shortname + "</a></td>";
     result += "<td>" + items[item] + "</td></tr>";
