@@ -22,7 +22,10 @@ var numFiles = new Array();
 var extraPages = new Array();
 
 function fetchData(){
-	$.get("testdata/testdata.xml", null , function(meta){
+	var meta;
+	$.ajax({url: "testdata/testdata.xml", async: false , success: function(index){
+		meta = index;
+	}});
       document.getElementById("busy").style.display = "block";
 			var xmlobject = parseXML(meta);
       var onlineFiles = xmlobject.getElementsByTagName("file");
@@ -100,8 +103,5 @@ function fetchData(){
 			}
 			
 			document.getElementById("busy").style.display = "none";
-			reloadOnceOnly();
-  });
+  
 }
-
-fetchData();

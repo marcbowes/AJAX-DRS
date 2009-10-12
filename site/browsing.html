@@ -1,8 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-	<title> AJAX-DRS Browsing </title>
+	<title> Caljax Browsing </title>
 	
 	<script src="javascripts/jquery.js" type="text/javascript"></script>
 	<script src="javascripts/jquery.ba-url.min.js" type="text/javascript"></script>
@@ -16,12 +18,90 @@
 	
 	<!-- Style from tutorial at http://www.halmatferello.com/journal/pure-css-buttons/ -->
 	<link href="stylesheets/reset.css" rel="stylesheet" type="text/css">
-	<link href="stylesheets/buttons.css" rel="stylesheet" type="text/css">
-	<link href="stylesheets/layout.css" rel="stylesheet" type="text/css">
-	<link href="stylesheets/typography.css" rel="stylesheet" type="text/css">
+  <link href="stylesheets/invalid.css" rel="stylesheet" type="text/css">
+  <link href="stylesheets/stylesheet.css" rel="stylesheet" type="text/css">
+	<link href="stylesheets/browse.css" rel="stylesheet" type="text/css">
 	
 </head>
+
 <body>
+	<div id="main-content">
+		
+		<ul class="shortcut-buttons-set">
+
+	  	<li><a class="shortcut-button" href="#"><span>
+	  		<img src="images/home_48.png" alt="icon" /><br />
+	  		Home
+	  	</span></a></li>
+
+	  	<li><a class="shortcut-button" href="#"><span>
+	  		<img src="images/search_48.png" alt="icon" /><br />
+	  		Search
+	  	</span></a></li>
+
+	  </ul>
+		
+
+	
+		<div class="clear"></div>
+	
+		<div id = "busy" class="center" style = "display: none;">
+			<h4>Checking for online updates...</h4>
+			<img src="images/loading.gif">
+		</div>
+	
+		<div id="browse">
+			
+			<div class="content-box column-left">
+			
+				<div class="content-box-content">
+					<p><small>Please select a field to sort by, by clicking one of the buttons below.</small></p>
+					<div id="browse-options"></div>
+			
+				</div>
+				
+			</div>
+			
+			<div class="clear"></div>
+		
+			<div class="content-box column-left">
+
+	      <div class="content-box-header">
+
+         	<h3>Browse results</h3>
+
+         </div> <!-- End .content-box-header -->
+
+          <div class="content-box-content">
+
+             <div class="tab-content default-tab">
+
+                    <div id="browse-results">
+                    	<h2>Welcome to the CALJAX browsing system.</h2>
+											<h3>Please use one of the buttons at the top to begin navigating.</h3>
+                    </div>
+										
+										<hr/>
+
+										<div class="pagination">
+										
+											<div id="pages"></div>
+										
+										</div>
+
+             </div> <!-- End #tab3 -->        
+
+          </div> <!-- End .content-box-content -->
+
+			</div> <!-- End .content-box -->
+				
+		
+						
+	  </div>
+	
+</div>
+	
+	<!--
 	<div id = "frame">
 		<div id = "heading">
 			<h1> AJAX - DRS - Browsing </h1>
@@ -37,5 +117,7 @@
 		<hr>
 		<div id="pages"></div>	
 	</div>
+	-->
 </body>
+
 </html>
