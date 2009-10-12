@@ -1,11 +1,24 @@
 var indices = new Array();
+var idxList = new Array();
 var untappedIndices = 0;
+var searchTerms;
 
 /* On DOM-Ready */
 $(function() {
+  /* Load list of indices */
+  $.get("lists/indices", null, function(list) {
+    _list = list.split("\n");
+    for (i = 0; i < _list.length; i++) {
+      idxList[_list[i]] = true;
+    }
+  }, "text");
+  
+  $("#results-content-box").hide();
+  
   /* Clicking search */
   $("#search_submit").live("click", function() {
     find($("#search_terms").val());
+    $("#results-content-box").show();
     return false; /* disable redirection */
   });
 });
@@ -26,10 +39,21 @@ function find(string) {
   string = string.toLowerCase();
   var terms = get_terms(string);
   
-  untappedIndices = terms.length;
-  
+  untappedIndices = 0;
+  searchTerms = new Array();
   for (i = 0; i < terms.length; i++) {
-    tapIndex(terms[i][0], terms[i][1], string);
+    if (idxList[terms[i][1]] == true) {
+      searchTerms.push(terms[i][1]);
+      untappedIndices++;
+    }
+  }
+  
+  if (untappedIndices > 0) {
+    for (i = 0; i < terms.length; i++) {
+      tapIndex(terms[i][0], terms[i][1], string);
+    }
+  } else {
+    results("<strong>Sorry, no results found.</strong>");
   }
 }
 
@@ -37,7 +61,6 @@ function find_real(string) {
   var terms = get_terms(string);
   var items = new Array();
   
-  /* for some reason a foreach prints integers? */
   for (i = 0; i < terms.length; i++) {
     var index = indices[terms[i][0]][terms[i][1]];
     for (item in index) {
@@ -50,13 +73,12 @@ function find_real(string) {
   }
   
 	var result = "<table>";
-	result += "<thead><tr><th>Display name</th><th>Rank</th></tr><tbody>"
   for (item in items) {
     var shortname = item.split(".metadata")[0];
-    result += "<tr><td><a href=\"../data/" + shortname + "\" class=\"result\">" + shortname + "</a></td>";
+    result += "<tr><td><a href=\"data/" + shortname + "\" class=\"result\">" + shortname + "</a></td>";
     result += "<td>" + items[item] + "</td></tr>";
   }
-  result += "</tbody></table>";
+  result += "</table>";
   results(result);
 }
 
@@ -87,6 +109,7 @@ function tapIndex(meta, word, searchString) {
 
 function tapComplete(meta, word, searchString) {
   untappedIndices--;
+  
   if (untappedIndices == 0) {
     find_real(searchString);
   }
