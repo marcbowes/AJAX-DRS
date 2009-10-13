@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 public class Searching {
   private HashMap<String, String> options;
   private HashMap<String, HashMap<String, HashMap<String, Integer>>> index;
+  private BufferedWriter ids;
   
   public Searching(HashMap <String, String> options) throws IOException {
     this.options = options;
@@ -35,14 +36,14 @@ public class Searching {
     
     File _file = new File(options.get("site") + "lists");
     _file.mkdirs();
-    BufferedWriter ids = new BufferedWriter(new FileWriter(_file + "/identifiers"));
+    ids = new BufferedWriter(new FileWriter(_file + "/identifiers"));
     BufferedWriter idx = new BufferedWriter(new FileWriter(_file + "/indices"));
     
     if (files == null) {
       System.err.println("no such file or directory " + options.get("path"));
     } else {
       for (int i = 0; i < files.length; i++) {
-        ids.write(i + ":" + files[i] + "\n");
+        ids.write(i + ":" + files[i] + ":");
         indexFile(files[i]);
       }
     }
@@ -68,6 +69,10 @@ public class Searching {
       Element root = dom.getDocumentElement();
       
       NodeList nodeList = root.getChildNodes();
+      
+      /* accumulate words for document length */
+      HashMap<String, Integer> accumulater = new HashMap<String, Integer>();
+      
       for(int i = 0; i < nodeList.getLength(); i++) {
         Node childNode = nodeList.item(i);
         if (childNode.getNodeType() == 1) {
@@ -94,12 +99,27 @@ public class Searching {
             s.stem();
             word = s.toString();
             
+            /* index */
             indexWord("__root__", word, filename);
             indexWord(metafield, word, filename);
+            
+            /* accumulate */
+            Integer accumulation;
+            if(accumulater.containsKey(word)) {
+              accumulation = accumulater.get(word);
+            } else {
+              accumulation = Integer.valueOf(0);
+            }
+            accumulater.put(word, Integer.valueOf(accumulation.intValue() + 1));
           } /* for each word */
         }
       }
-         
+      
+      int length = 0;
+      for (Integer accumulation : accumulater.values()) {
+        length += Math.pow(accumulation.intValue(), 2);
+      }
+      ids.write(length + "\n");
       return true;
     } catch (Exception e) {
       System.err.println("Unable to create index for \"" + filename + "\" -- " + e);
