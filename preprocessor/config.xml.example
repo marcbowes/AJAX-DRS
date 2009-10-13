@@ -1,5 +1,5 @@
 <root>
-	<version>2009-10-12</verstion>
+	<version>2009-10-12</version>
 	<representation>title,date,blarg</representation>
 	<data>../site/data/</data>
 	<site>../site/</site>
