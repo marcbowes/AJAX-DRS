@@ -1,5 +1,6 @@
 var indices = new Array();
 var idxList = new Array();
+var idsList = new Array();
 var untappedIndices = 0;
 var searchTerms;
 
@@ -10,6 +11,15 @@ $(function() {
     _list = list.split("\n");
     for (i = 0; i < _list.length; i++) {
       idxList[_list[i]] = true;
+    }
+  }, "text");
+  
+  /* Load document identifiers */
+  $.get("lists/identifiers", null, function(list) {
+    _list = list.split("\n");
+    for (i = 0; i < _list.length; i++) {
+      var attrs = _list[i].split(":");
+      idsList[attrs[1]] = attrs[2];
     }
   }, "text");
   
@@ -78,7 +88,8 @@ function find_real(string) {
       var count = items[item][i];
       sum += count;
     }
-    items[item] = sum / (Math.sqrt(terms.length) * Math.sqrt(10));
+    var ln = parseInt(idsList[item]);
+    items[item] = sum / (Math.sqrt(terms.length) * Math.sqrt(ln));
     
     var shortname = item.split(".metadata")[0];
     result += "<tr><td><a href=\"data/" + shortname + "\" class=\"result\">" + shortname + "</a></td>";
