@@ -1,6 +1,10 @@
 /* Create sortable buttons */
 $(document).ready(function() {
-	fetchData();
+	//Checkes wether to fetchData updates from the online repo.
+	if($.cookie("fetchOnline") == "true"){
+		fetchData();
+		document.getElementById("checkOnline").checked = true;
+	}
 	createSorts();
   //Dynamically reloads info based on fragments.
   $.fragmentChange(true);
@@ -23,12 +27,23 @@ $(document).ready(function() {
 });
 
 /*
+	Function to change the checkOnline setting in cookies.
+*/
+function checkBox(){
+		if(document.getElementById("checkOnline").checked){
+			$.cookie("fetchOnline", "true", { expires: 7});
+		}else{
+			$.cookie("fetchOnline", "false", {expires: 7});
+		}
+}
+
+/*
 	Function that creates the sort buttons when the page is loaded. 
 */
 function createSorts() {
   for(file in files){
       $("#browse-options").append(
-          " <a id=\"" + file + "\" class=\"button\" href=\"#page=" + capitalise(file) + ":" +  files[file][0] + "&type=sort\" class=\"green-button pcb\"> <span>" + capitalise(file) + "</span> </a>"
+          "<a id=\"" + file + "\" class=\"button\" href=\"#page=" + capitalise(file) + ":" +  files[file][0] + "&type=sort\" class=\"green-button pcb\"> <span>" + capitalise(file) + "</span></a>"
         );
   }  
 }
@@ -59,11 +74,13 @@ function createCombinedList(file, sort_by){
 				}				
 			}				
 
+
 			//Combine Offline and Online files.
 			var combinedList = offlineList;
 			for(i = 0; i < onlineMetaFiles.length; i++){
-				if(onlineMetaFiles[i][uncapitalise(sort_by)] != null){
-					if(onlineMetaFiles[i][uncapitalise(sort_by)] == file){
+				if(!force_page_count || onlineMetaFiles[i][uncapitalise(sort_by)] != null){
+					//if its in this file.
+					if(!force_page_count || onlineMetaFiles[i][uncapitalise(sort_by)] == file){
 						var field_value = onlineMetaFiles[i]["file"].getElementsByTagName(uncapitalise(sort_by))[0].childNodes[0].nodeValue;
 						//alert(field_value);
 						var metafile = new Array();
@@ -82,15 +99,35 @@ function createCombinedList(file, sort_by){
 						metafile["sorted_field"] = field_value;
 						metafile["locality"] = "online"
 						
+						var prev_metas = null;
+						var last_meta_sorted_field_value = null;
+						
+						if(file != files[uncapitalise(sort_by)][0]){							
+							prevfile = uncapitalise(sort_by) + (parseInt(file.substring(sort_by.length))-1);
+							$.ajax({url: "lists/" + prevfile, async: false, success: function(index){
+								prev_metas = index.split("\n");
+								last_meta_sorted_field_value = prev_metas[prev_metas.length-2].split(";")[2];
+						  }});
+						}
 						var inserted = false;
 						for(j = 0; j < combinedList.length; j++){							
+							//Need to make sure that it is bigger than the previous entry.
 							if(combinedList[j]["sorted_field"] > field_value){
-								combinedList.splice(j,0,metafile);
-								inserted = true;
-								break;
+								if(prev_metas == null){				
+									combinedList.splice(j,0,metafile);
+									inserted = true;
+									break;
+								}else{
+									if(last_meta_sorted_field_value < field_value){
+										combinedList.splice(j,0,metafile);
+										inserted = true;
+										break;
+									}
+								}
 							}								
 						}
-						if(inserted == false){
+						//alert(last_meta_sorted_field_value + " " + field_value);
+						if(inserted == false && file == files[uncapitalise(sort_by)][files[uncapitalise(sort_by)].length-1] && last_meta_sorted_field_value < field_value){
 							combinedList.push(metafile);
 						}							
 					}
@@ -144,7 +181,7 @@ function loadSort(file, sort_by){
 		var extra = calcExtra(file);
 		if(extra > 0){
 			//2.			
-			var prev_page = setCharAt(file, file.length-1, parseInt(file[file.length-1])-1);
+			var prev_page = uncapitalise(sort_by) + (parseInt(file.substring(sort_by.length))-1);//setCharAt(file, file.length-1, parseInt(file.substring(sort_by.length))-1);
 		  var prevListSize = pageSize;
 			
 			if(numFiles[prev_page] != null){
@@ -153,7 +190,7 @@ function loadSort(file, sort_by){
 			//3 & 4.
 			while(extra > prevListSize){
 				extra = extra - prevListSize;
-				prev_page = setCharAt(prev_page, prev_page.length-1, parseInt(prev_page[prev_page.length-1])-1);
+				prev_page = setCharAt(prev_page, prev_page.length-1, parseInt(prev_page.substring(sort_by.length))-1);
 				prevListSize = pageSize;
 					
 			  if(numFiles[prev_page] != null){
@@ -169,15 +206,13 @@ function loadSort(file, sort_by){
 			}			
 		}
 		
-		
-
 		startList = createCombinedList(page, sort_by);
 		var combinedList = new Array();
 		var count = 0;
 		for(i = start; i < startList.length; i++){
 			combinedList.push(startList[i]);
 			count = count+1;
-			if(count >= pageSize){
+			if(force_page_count && count >= pageSize){
 				break;
 			}
 		}
@@ -198,15 +233,29 @@ function loadSort(file, sort_by){
 		//Create final list to be displayed
 		
 		
+		
+		
+		
+		//*************************
 		//Display lists
+		//*************************
 		current_value = "";
 		
-		print+=("<ol start=\"" + ((file.substring(file.length-1, file.length)*pageSize) + 1) + "\">");
+		if(force_page_count){
+			print+=("<ol start=\"" + ((file.substring(sort_by.length)*pageSize) + 1) + "\">");
+		}else{
+			print+=("<ul>");
+		}
     for(i = 0; i < combinedList.length; i++){
 		      
         print+=("<li><a href=\"#page=" + combinedList[i]["file"] + ":" +  combinedList[i]["locality"] + "&type=meta\"><h4>" + combinedList[i]["representation"] + "</h4>");
 				
-				print+=("<small>" + sort_by + " : " + combinedList[i]["sorted_field"]  + "</small>")
+				var sorted_field_rep = combinedList[i]["sorted_field"];
+				if(sorted_field_rep.length > 150){
+					sorted_field_rep = sorted_field_rep.substring(0,150) + "...";
+				}
+				
+				print+=("<small>" + sort_by + " : " + sorted_field_rep  + "</small>")
 				
 				print+=("</a></li>");
     
@@ -214,30 +263,56 @@ function loadSort(file, sort_by){
         //print+=(line);           
     
     }
-    
-    print+=("</ol>");        
+    if(force_page_count){
+    	print+=("</ol>");    
+		}else{
+			print+=("</ul>");
+		}   
     $("#browse-results").html(print)        
     sort_by = uncapitalise(sort_by)
     
+
+
+		//********************
     //Pages
+		//********************
     $("#pages").html("");
     for(i = 0;i < files[sort_by].length; i++){
-        if(i == parseInt(file[file.length-1])){
-            $("#pages").append("<a class=\"current\"> " + (i+1) + "</a>")
+        if(i == parseInt(file.substring(sort_by.length))){
+            $("#pages").append("<a class=\"current\"> " + (i+1) + "</a>");
         }else{
-            $("#pages").append("<a class=\"number\" href=\"#page=" + capitalise(sort_by) + ":" +  files[sort_by][i] + "&type=sort\">" + (i+1) + "</a> ")
+            $("#pages").append("<a class=\"number\" href=\"#page=" + capitalise(sort_by) + ":" +  files[sort_by][i] + "&type=sort\">" + (i+1) + "</a> ");
         }
     }
 		if(extraPages[sort_by] != null){
 			for(i = files[sort_by].length; i < (extraPages[sort_by].length + files[sort_by].length); i++){
-				if(i == parseInt(file[file.length-1])){
-	          $("#pages").append("<a class=\"current\">" + (i+1) + "</a>")
+				if(i == parseInt(file.substring(sort_by.length))){
+	          $("#pages").append("<a class=\"current\">" + (i+1) + "</a>");
 	      }else{
-	          $("#pages").append("<a class=\"number\" href=\"#page=" + capitalise(sort_by) + ":" +  extraPages[sort_by][i - (files[sort_by].length)] + "&type=sort\">" + (i+1) + "</a> ")
+	          $("#pages").append("<a class=\"number\" href=\"#page=" + capitalise(sort_by) + ":" +  extraPages[sort_by][i - (files[sort_by].length)] + "&type=sort\">" + (i+1) + "</a> ");
 	      }
 			}
 		}
+		$("#pages").append("<p/><div> <small>Jump To Page</small> <input type=\"text\" id=\"pageNumber\" /> <a class=\"button\" onclick=\"jumpToPage();\">Submit</a> </div>");
     //$("pages")
+}
+
+function jumpToPage(){
+	var sort_by = uncapitalise($.fragment()["page"].split(":")[0]);
+	pageNum = document.getElementById("pageNumber").value;
+	var max = files[sort_by].length;
+	if(extraPages[sort_by] != null){
+		max += extraPages[sort_by].length;
+	}
+	if(pageNum <= max && pageNum > 0){
+		if(pageNum <= files[sort_by].length){
+			//normal page
+			$.setFragment({"page" : (capitalise(sort_by) + ":" + files[sort_by][pageNum-1]), "type" : "sort"});
+		}else{
+			//extra page
+			$.setFragment({"page" : (capitalise(sort_by) + ":" + extraPages[sort_by][(pageNum-1) - (files[sort_by].length)]), "type" : "sort"});
+		}
+	}
 }
 
 /*
