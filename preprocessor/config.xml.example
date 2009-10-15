@@ -3,4 +3,6 @@
 	<representation>title,date,blarg</representation>
 	<data>../site/data/</data>
 	<site>../site/</site>
+	<items_per_page>10</items_per_page>
+	<force_page_count>true<force_page_count>
 </root>

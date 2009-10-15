@@ -182,6 +182,7 @@ public class Browsing {
 		writer1.write("var version = " + options.get("version") + ";\n");
 		writer1.write("var representation = \"" + options.get("representation") + "\";\n");
 		writer1.write("var pageSize = " + RECORDS_PER_FILE + ";\n");
+		writer1.write("var force_page_count = " + options.get("force_page_count") + ";\n");
 		writer1.close();
 		
 	}
