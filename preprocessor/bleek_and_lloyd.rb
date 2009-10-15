@@ -12,10 +12,34 @@ ActiveRecord::Base.establish_connection({
 })
 
 def normalize(filename)
+  puts 'Loading document'
   doc   = REXML::Document.new(File.new(filename))
   root  = doc.root
   
-  # "Top-down" load, although it's 
+  # Going from the top of the XML document
+  puts 'Loading stories'
+  root.elements['stories'].reject { |e| !e.is_a? REXML::Element }.each do |story|
+    s = Story.new
+    
+    # Attributes
+    s.id          = story.elements['id'].text.to_i
+    s.title       = story.elements['title'].try(:text)
+    s.summary     = story.elements['summary'].try(:text)
+    s.comments    = story.elements['comments'].try(:text)
+    s.date        = story.elements['date'].try(:text)
+    s.storypages  = story.elements['storypages'].try(:text)
+    
+    # Associations
+    collection_name = story.elements['collection'].try(:text)
+    unless collection_name.blank?
+      s.collection = Collection.find_or_create_by_name(collection_name)
+    end
+    
+    # Empty attributes and associations:
+    # keywords, subkeywords, category and author come later
+    s.save
+  end
+  puts "#{Story.count} stories loaded"
 end
 
 class Caljaxize
@@ -137,6 +161,7 @@ class CreateTables < ActiveRecord::Migration
     end
     
     create_table :pages do |t|
+      t.integer :id
       t.string :name
       t.references :book
     end
