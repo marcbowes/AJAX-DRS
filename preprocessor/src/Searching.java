@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.List;
 
 import java.io.*;
 
@@ -25,14 +26,7 @@ public class Searching {
     index = new HashMap<String, HashMap<String, HashMap<String, Integer>>>();
     index.put("__root__", new HashMap<String, HashMap<String, Integer>>());
     
-    FilenameFilter filter = new FilenameFilter() {
-      public boolean accept(File file, String name) {
-        return name.endsWith(".metadata");
-      }
-    };
-    
-    File dir = new File(options.get("path"));
-    String[] files = dir.list(filter);
+    List<File> files = FileListing.getFileListing(new File(options.get("path")));
     
     File _file = new File(options.get("site") + "lists");
     _file.mkdirs();
@@ -42,9 +36,14 @@ public class Searching {
     if (files == null) {
       System.err.println("no such file or directory " + options.get("path"));
     } else {
-      for (int i = 0; i < files.length; i++) {
-        ids.write(i + ":" + files[i] + ":");
-        indexFile(files[i]);
+      int i = 0;
+      for (File file : files) {
+        if (!file.getName().endsWith(".metadata"))
+          continue;
+        
+        i++;
+        ids.write(i + ":" + file.getName() + ":");
+        indexFile(file);
       }
     }
     
@@ -60,12 +59,14 @@ public class Searching {
     idx.close();
   }
   
-  private boolean indexFile(String filename) {
+  private boolean indexFile(File file) {
+    String filename = file.getName();
+    
     try {
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();
-    
-      Document dom = db.parse(options.get("path") + filename);
+      
+      Document dom = db.parse(file.getAbsolutePath());
       Element root = dom.getDocumentElement();
       
       NodeList nodeList = root.getChildNodes();
@@ -82,6 +83,9 @@ public class Searching {
             index.put(metafield, new HashMap<String, HashMap<String, Integer>>());
           
           /* split by whitespace into an array of words */
+          if (childNode.getFirstChild() == null)
+            continue;
+          
           String[] words = childNode.getFirstChild().getNodeValue().replaceAll("[^\\d\\w]", " ").split("[\\s]");
           
           /* we now need to store that the current file contains the current word */
