@@ -51,13 +51,12 @@ public class Browsing {
 		File dir = new File(path);				
 		File[] list = dir.listFiles();
 		if(list != null){
-			for (int i = 0; i < list.length; i++)  {
+			for (int i = 0; i < list.length; i++){
 				if(list[i].isFile()){
 					//UGLY IF, Checks for metadata files and that the metadata file has a src file.
 					if(list[i].getName().endsWith(".metadata") && search(list,list[i].getName().substring(0,list[i].getName().length() - ".metadata".length()))){
 						Document doc = parseXmlFile(list[i].getAbsolutePath(), false);
 						Node root = doc.getFirstChild();
-					
 						NodeList nodes = root.getChildNodes();
 						HashMap<String,String> m = new HashMap<String,String>();
 						//Goes through the child nodes accessing the nodes of type 1.
@@ -65,7 +64,7 @@ public class Browsing {
 						for(int j = 0; j < nodes.getLength(); j++){
 							Node n = nodes.item(j);
 							if(n.getNodeType() == 1){	
-								if(n.getFirstChild().getNodeValue().trim().length() > 0){					
+								if(n.getFirstChild() != null && n.getFirstChild().getNodeValue().trim().length() > 0){					
 									m.put(n.getNodeName(), n.getFirstChild().getNodeValue());
 								}
 							
@@ -151,14 +150,20 @@ public class Browsing {
 		BufferedWriter writer1 = new BufferedWriter(new FileWriter(importFile));
 		writer1.write("var files = new Array();");
 		writer1.newLine();		
+		
 		for( String key : sortedLists.keySet()){
-		    int filenum = 0;
+		  int filenum = 0;
+			
 			System.out.println("Writing \"" + key + "\" file " + filenum);
+			
 			writer1.write("var " + key + " = new Array();\n");
 			writer1.write(key+"[" + filenum + "] = \"" + key + filenum + "\";\n");
+			
 			status = new File(options.get("site") + "lists/").mkdirs();
+			
 			File outFile = new File(options.get("site") + "lists/" + key + filenum);
 			BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
+			
 			for(int i = 0; i < sortedLists.get(key).size(); i++){
 				/*
 				 * TODO : Count to 20 or so, then move into next file!

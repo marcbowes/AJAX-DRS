@@ -43,7 +43,7 @@ function checkBox(){
 function createSorts() {
   for(file in files){
       $("#browse-options").append(
-          "<a id=\"" + file + "\" class=\"button\" href=\"#page=" + capitalise(file) + ":" +  files[file][0] + "&type=sort\" class=\"green-button pcb\"> <span>" + capitalise(file) + "</span></a>"
+          "<a id=\"" + file + "\" class=\"button\" href=\"#page=" + capitalise(file) + ":" +  files[file][0] + "&type=sort&number=1\" class=\"green-button pcb\"> <span>" + capitalise(file) + "</span></a>"
         );
   }  
 }
@@ -276,8 +276,47 @@ function loadSort(file, sort_by){
 		//********************
     //Pages
 		//********************
-    $("#pages").html("");
-    for(i = 0;i < files[sort_by].length; i++){
+    
+		$("#pages").html("");
+    current_page = parseInt($.fragment()["number"]);
+		var pages = new Array();
+		var max = files[sort_by].length;
+		if(extraPages[sort_by] != null){
+			max += extraPages[sort_by].length;
+		}
+		
+		for(i = current_page - 3; i <= (current_page + 3); i++){
+			if(i > 0 && i < max){
+				pages.push(i);
+			}
+		}
+		
+		if($.inArray(1, pages) < 0){
+			pages.splice(0, 0, 1);
+		}
+		if($.inArray(max, pages) < 0){
+			pages.push(max);
+		}
+		
+
+		for(i = 0; i < pages.length; i++){
+			page = parseInt(pages[i]);
+			if(page == current_page){
+				$("#pages").append("<a class=\"current\"> " + page + "</a>");
+			}else{
+				if(page <= files[uncapitalise(sort_by)].length){
+					$("#pages").append("<a class=\"number\" href=\"#page=" + capitalise(sort_by) + ":" +  files[sort_by][page-1] + "&type=sort&number=" + page + "\">" + (page) + "</a> ");
+				}else{
+					$("#pages").append("<a class=\"number\" href=\"#page=" + capitalise(sort_by) + ":" +  extraPages[sort_by][(page-1) - (files[sort_by].length)] + "&type=sort&number=" + page + "\">" + (page) + "</a> ");
+				}
+			}
+			if(page != max && (parseInt(pages[i+1])) != (page+1)){
+				$("#pages").append(". . . ");
+			}
+		}
+		
+		/*
+		for(i = 0;i < files[sort_by].length; i++){
         if(i == parseInt(file.substring(sort_by.length))){
             $("#pages").append("<a class=\"current\"> " + (i+1) + "</a>");
         }else{
@@ -293,7 +332,10 @@ function loadSort(file, sort_by){
 	      }
 			}
 		}
-		$("#pages").append("<p/><div> <small>Jump To Page</small> <input type=\"text\" id=\"pageNumber\" /> <a class=\"button\" onclick=\"jumpToPage();\">Submit</a> </div>");
+		*/
+		
+		
+		$("#pages").append("<p/><div> <small>Jump To Page </small><input style=\"width:40px;\" type=\"text\" id=\"pageNumber\" /> <a class=\"button\" onclick=\"jumpToPage();\">Submit</a> </div>");
     //$("pages")
 }
 
@@ -307,10 +349,10 @@ function jumpToPage(){
 	if(pageNum <= max && pageNum > 0){
 		if(pageNum <= files[sort_by].length){
 			//normal page
-			$.setFragment({"page" : (capitalise(sort_by) + ":" + files[sort_by][pageNum-1]), "type" : "sort"});
+			$.setFragment({"page" : (capitalise(sort_by) + ":" + files[sort_by][pageNum-1]), "type" : "sort", "number" : pageNum});
 		}else{
 			//extra page
-			$.setFragment({"page" : (capitalise(sort_by) + ":" + extraPages[sort_by][(pageNum-1) - (files[sort_by].length)]), "type" : "sort"});
+			$.setFragment({"page" : (capitalise(sort_by) + ":" + extraPages[sort_by][(pageNum-1) - (files[sort_by].length)]), "type" : "sort" , "number" : pageNum});
 		}
 	}
 }

@@ -1,5 +1,6 @@
 require 'rexml/document'
 require 'activerecord'
+require 'ftools'
 
 ActiveRecord::Base.establish_connection({
   'adapter'  => 'mysql',
@@ -8,7 +9,7 @@ ActiveRecord::Base.establish_connection({
   'database' => 'bal',
   'username' => 'root',
   'password' => '',
-  'socket'   => '/var/run/mysqld/mysqld.sock',
+  'socket'   => '/tmp/mysql.sock',
   'charset'  => 'utf8'
 })
 
@@ -129,7 +130,54 @@ def normalize(filename)
   puts "#{Book.count} books loaded (#{Time.now - start} seconds)"
 end
 
-class Caljaxize
+def caljaxize()
+  #For each collection make a folder.
+  Collection.find(:all).each do |c|     
+     c.books.each do |b|
+       File.makedirs "../site/data/#{c.name}/#{b.name}"      
+       b.pages.each do |p|
+         #Build metadata file
+         o = Output.new
+         o.name = p.name
+         o.date = p.story.date unless p.story.nil?
+         o.collection = p.book.collection.name unless p.book.nil?
+         o.book = p.book.name unless p.book.nil?
+         o.story = p.story.title unless p.story.nil?
+         o.author = p.story.author.name unless (p.story.nil? || p.story.author.nil?)
+         o.category = p.story.category.name unless (p.story.nil? || p.story.category.nil?)
+         o.keywords = p.story.keywords.uniq.join(" ") unless (p.story.nil? || p.story.keywords.blank?)
+         o.subkeywords = p.story.subkeywords.uniq.join(" ") unless (p.story.nil? || p.story.subkeywords.blank?)
+         
+         File.open("../site/data/#{c.name}/#{b.name}/#{o.name}.metadata", 'w') {|f| f.write(o.to_xml) }
+         File.open("../site/data/#{c.name}/#{b.name}/#{o.name}", 'w') {|f| f.write("Stub file for #{o.name}") }
+         
+                  # 
+                  # t.string :name  #page->name
+                  # t.string :date  #page->story->date
+                  # t.string :collection #page->collection->name
+                  # t.string :book  #page->book->name
+                  # t.string :story #page->story->title
+                  # t.string :authors #page->story->authors
+                  # t.string :category #page->story->categories
+                  # 
+                  # 
+                  # t.text :keywords #page->story->keywords
+                  # t.text :subkeywords #page->story->subkeywords
+         #Save it with a random stuf file
+         
+         
+       end
+       
+     end
+   
+  end
+    #For each book in this collection make a folder
+      #For each page in this book create its metadata and stub file
+  
+  
+end
+
+class Output < ActiveRecord::Base
   
 end
 
@@ -267,6 +315,22 @@ class CreateTables < ActiveRecord::Migration
       t.references :story
       t.references :book
     end
+    
+    create_table :outputs do |t|
+      t.string :name  #page->name
+      t.string :date  #page->story->date
+      t.string :collection #page->collection->name
+      t.string :book  #page->book->name
+      t.string :story #page->story->title
+      t.string :author #page->story->authors
+      t.string :category #page->story->categories
+      
+      
+      t.text :keywords #page->story->keywords
+      t.text :subkeywords #page->story->subkeywords
+      
+    end
+    
   end
   
   def self.down
@@ -275,5 +339,3 @@ class CreateTables < ActiveRecord::Migration
     end
   end
 end
-
-normalize('data.xml')
