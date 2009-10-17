@@ -3,6 +3,8 @@ var idxList = new Array();
 var idsList = new Array();
 var untappedIndices = 0;
 var searchTerms;
+var pages       = 0;
+var currentPage = 0;
 
 /* On DOM-Ready */
 $(function() {
@@ -69,7 +71,7 @@ function find(string) {
 
 function find_real(string) {
   var terms = get_terms(string);
-  var items = new Array();
+  var items = new Object();
   
   for (i = 0; i < terms.length; i++) {
     var index = indices[terms[i][0]][terms[i][1]];
@@ -81,8 +83,18 @@ function find_real(string) {
     }
   }
   
-	var result = "<table>";
+  var rescount  = 0;
+  pages         = 1;
+	var result    = "<table id=\"page-1\">";
   for (item in items) {
+    rescount++;
+    if (rescount % 10 == 0) {
+      if (pages != 1)
+        result += "</table>";
+      pages = pages + 1;
+      result += "<table id=\"page-" + pages + "\" style=\"display: none;\">";
+    }
+    
     var sum = 0;
     for (i = 0; i < items[item].length; i++) {
       var count = items[item][i];
@@ -93,10 +105,101 @@ function find_real(string) {
     
     var shortname = item.split(".metadata")[0];
     result += "<tr><td><a href=\"data/" + shortname + "\" class=\"result\">" + shortname + "</a></td>";
-    result += "<td>" + items[item] + "</td></tr>";
+    // result += "<td>" + items[item] + "</td></tr>";
   }
-  result += "</table>";
+  result += "</table><div class=\"pagination\"></div>";
+  
   results(result);
+  
+  currentPage = 1;
+  showPagination();
+}
+
+/* Pagination display */
+function showPagination()
+{
+  var output = "";
+  
+  if (pages > 1)
+  {
+    /* Show pages 1 & 2 */
+    for (i = 1; i < pages && i < 3; i++)
+    {
+      output += "<a href=\"#\">" + i + "</a>";
+    }
+    
+    /* If we aren't on page 3, then show a snip-off */
+    if (currentPage > 4)
+    {
+      output += "... ";
+    }
+    
+    /* Show context of the current page we're on (2 on each side) */
+    for (i = currentPage - 1; i < pages && i < currentPage + 3; i++)
+    {
+      if (i < 3) continue; /* Take care not to redisplay earlier pages */
+      output += "<a href=\"#\">" + i + "</a>";
+    }
+    
+    /* If the current page doesn't take us near the end, then snip-off and show last page */
+    if (currentPage + 3 < pages)
+    {
+      output += "... <a href=\"#\">" + pages + "</a>";
+    }
+    else /* We were just short */
+    {
+      output += "<a href=\"#\">" + pages + "</a>";
+    }
+    
+    /* Jump to page */
+    output += "<p>";
+    output += "<input type=\"text\" class=\"jumper\"></input><submit class=\"button\" href=\"#\">Jump</a>";
+    output += "</p>";
+  }
+  
+  $("#search_results .pagination").html(output);
+  $("#search_results .pagination a").addClass("number");
+  
+  /* Pagination code */
+  $("#search_results .pagination a").click(function() {
+    $("#search_results table").hide();
+    currentPage = parseInt($(this).html());
+    $("#search_results #page-" + currentPage).show();
+    showPagination();
+    
+    /* Fill in jumper */
+    $("#search_results .pagination .jumper").val(currentPage);
+    
+    return false; /* Disable anchor-jump */
+  });
+  
+  /* Jumper code */
+  $("#search_results .pagination .jumper").keypress(function(e) {
+    /* Only process Return (13) */
+    if (e.keyCode != 13)
+      return;
+    
+    var number = parseInt($(this).val());
+    
+    /* Opt out for invalid input */
+    if (number < 1 || number > pages)
+    {
+      alert("Please choose a page between 1 and " + pages);
+      return;
+    }
+    
+    $("#search_results table").hide();
+    currentPage = number;
+    $("#search_results #page-" + currentPage).show();
+    showPagination();
+  });
+  
+  /* Jump to page clicked */
+  $("#search_results .pagination submit.button").click(function() {
+    e = jQuery.Event("keypress"); e.keyCode = 13;
+    $("#search_results .pagination .jumper").trigger(e);
+    return false;
+  });
 }
 
 function tapIndex(meta, word, searchString) {
