@@ -125,7 +125,10 @@ function showPagination()
     /* Show pages 1 & 2 */
     for (i = 1; i < pages && i < 3; i++)
     {
-      output += "<a href=\"#\">" + i + "</a>";
+      if (i == currentPage)
+        output += "<a href=\"#\" class=\"current\">" + i + "</a>";
+      else
+        output += "<a href=\"#\">" + i + "</a>";      
     }
     
     /* If we aren't on page 3, then show a snip-off */
@@ -138,7 +141,11 @@ function showPagination()
     for (i = currentPage - 1; i < pages && i < currentPage + 3; i++)
     {
       if (i < 3) continue; /* Take care not to redisplay earlier pages */
-      output += "<a href=\"#\">" + i + "</a>";
+      
+      if (i == currentPage)
+        output += "<a href=\"#\" class=\"current\">" + i + "</a>";
+      else
+        output += "<a href=\"#\">" + i + "</a>";      
     }
     
     /* If the current page doesn't take us near the end, then snip-off and show last page */
@@ -148,7 +155,10 @@ function showPagination()
     }
     else /* We were just short */
     {
-      output += "<a href=\"#\">" + pages + "</a>";
+      if (pages == currentPage)
+        output += "<a href=\"#\" class=\"current\">" + pages + "</a>";
+      else
+        output += "<a href=\"#\">" + pages + "</a>";
     }
     
     /* Jump to page */
@@ -166,9 +176,6 @@ function showPagination()
     currentPage = parseInt($(this).html());
     $("#search_results #page-" + currentPage).show();
     showPagination();
-    
-    /* Fill in jumper */
-    $("#search_results .pagination .jumper").val(currentPage);
     
     return false; /* Disable anchor-jump */
   });
