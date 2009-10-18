@@ -61,10 +61,11 @@ public class Browsing {
 						HashMap<String,String> m = new HashMap<String,String>();
 						//Goes through the child nodes accessing the nodes of type 1.
 						//Reads The name of the node aswell as the value
+						String[] do_not_browse = options.get("do_not_browse").split(",");
 						for(int j = 0; j < nodes.getLength(); j++){
 							Node n = nodes.item(j);
 							if(n.getNodeType() == 1){	
-								if(n.getFirstChild() != null && n.getFirstChild().getNodeValue().trim().length() > 0){					
+								if(n.getFirstChild() != null && n.getFirstChild().getNodeValue().trim().length() > 0 && !(search_string_array(do_not_browse,n.getNodeName()))){					
 									m.put(n.getNodeName(), n.getFirstChild().getNodeValue());
 								}
 							
@@ -229,13 +230,21 @@ public class Browsing {
 	 * CANT BELIEVE JAVA DOESNT HAVE THIS :C
 	 */
 	public static boolean search(File [] a, String key){
-		boolean found = false;
 		for(int i = 0; i < a.length; i++){
 			if(a[i].getName().equalsIgnoreCase(key)){
-				found = true;
+				return true;
 			}
 		}
-		return found;
+		return false;
+	}
+	
+	public static boolean search_string_array(String [] a, String key){
+		for(int i = 0; i < a.length; i++){
+			if(a[i].equalsIgnoreCase(key)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

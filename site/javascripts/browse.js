@@ -81,55 +81,57 @@ function createCombinedList(file, sort_by){
 				if(!force_page_count || onlineMetaFiles[i][uncapitalise(sort_by)] != null){
 					//if its in this file.
 					if(!force_page_count || onlineMetaFiles[i][uncapitalise(sort_by)] == file){
-						var field_value = onlineMetaFiles[i]["file"].getElementsByTagName(uncapitalise(sort_by))[0].childNodes[0].nodeValue;
-						//alert(field_value);
-						var metafile = new Array();
-						metafile["file"] = i;
-						parts = representation.split(",");
-						var rep = "";
-						for(k = 0; k < parts.length; k++){
-							if(onlineMetaFiles[i]["file"].getElementsByTagName(parts[k])[0] != null){
-								rep += onlineMetaFiles[i]["file"].getElementsByTagName(parts[k])[0].childNodes[0].nodeValue;
-								rep += ", ";
+						if(onlineMetaFiles[i]["file"].getElementsByTagName(uncapitalise(sort_by))[0] != null){
+							var field_value = onlineMetaFiles[i]["file"].getElementsByTagName(uncapitalise(sort_by))[0].childNodes[0].nodeValue;
+							//alert(field_value);
+							var metafile = new Array();
+							metafile["file"] = i;
+							parts = representation.split(",");
+							var rep = "";
+							for(k = 0; k < parts.length; k++){
+								if(onlineMetaFiles[i]["file"].getElementsByTagName(parts[k])[0] != null){
+									rep += onlineMetaFiles[i]["file"].getElementsByTagName(parts[k])[0].childNodes[0].nodeValue;
+									rep += ", ";
+								}
 							}
-						}
-						rep = rep.substring(0, rep.length-2);
+							rep = rep.substring(0, rep.length-2);
 						
-						metafile["representation"] = rep;
-						metafile["sorted_field"] = field_value;
-						metafile["locality"] = "online"
+							metafile["representation"] = rep;
+							metafile["sorted_field"] = field_value;
+							metafile["locality"] = "online"
 						
-						var prev_metas = null;
-						var last_meta_sorted_field_value = null;
+							var prev_metas = null;
+							var last_meta_sorted_field_value = null;
 						
-						if(file != files[uncapitalise(sort_by)][0]){							
-							prevfile = uncapitalise(sort_by) + (parseInt(file.substring(sort_by.length))-1);
-							$.ajax({url: "lists/" + prevfile, async: false, success: function(index){
-								prev_metas = index.split("\n");
-								last_meta_sorted_field_value = prev_metas[prev_metas.length-2].split(";")[2];
-						  }});
-						}
-						var inserted = false;
-						for(j = 0; j < combinedList.length; j++){							
-							//Need to make sure that it is bigger than the previous entry.
-							if(combinedList[j]["sorted_field"] > field_value){
-								if(prev_metas == null){				
-									combinedList.splice(j,0,metafile);
-									inserted = true;
-									break;
-								}else{
-									if(last_meta_sorted_field_value < field_value){
+							if(file != files[uncapitalise(sort_by)][0]){							
+								prevfile = uncapitalise(sort_by) + (parseInt(file.substring(sort_by.length))-1);
+								$.ajax({url: "lists/" + prevfile, async: false, success: function(index){
+									prev_metas = index.split("\n");
+									last_meta_sorted_field_value = prev_metas[prev_metas.length-2].split(";")[2];
+							  }});
+							}
+							var inserted = false;
+							for(j = 0; j < combinedList.length; j++){							
+								//Need to make sure that it is bigger than the previous entry.
+								if(combinedList[j]["sorted_field"] > field_value){
+									if(prev_metas == null){				
 										combinedList.splice(j,0,metafile);
 										inserted = true;
 										break;
+									}else{
+										if(last_meta_sorted_field_value < field_value){
+											combinedList.splice(j,0,metafile);
+											inserted = true;
+											break;
+										}
 									}
-								}
-							}								
-						}
-						//alert(last_meta_sorted_field_value + " " + field_value);
-						if(inserted == false && file == files[uncapitalise(sort_by)][files[uncapitalise(sort_by)].length-1] && last_meta_sorted_field_value < field_value){
-							combinedList.push(metafile);
-						}							
+								}								
+							}
+							//alert(last_meta_sorted_field_value + " " + field_value);
+							if(inserted == false && file == files[uncapitalise(sort_by)][files[uncapitalise(sort_by)].length-1] && last_meta_sorted_field_value < field_value){
+								combinedList.push(metafile);
+							}							
+						}//end content check
 					}
 				}
 			}
