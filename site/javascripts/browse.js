@@ -2,8 +2,8 @@
 $(document).ready(function() {
 	//Checkes wether to fetchData updates from the online repo.
 	if($.cookie("fetchOnline") == "true"){
-		fetchData();
 		document.getElementById("checkOnline").checked = true;
+		fetchData();
 	}
 	createSorts();
   //Dynamically reloads info based on fragments.
@@ -339,6 +339,24 @@ function loadSort(file, sort_by){
 		
 		$("#pages").append("<p/><div> <small>Jump To Page </small><input style=\"width:40px;\" type=\"text\" id=\"pageNumber\" /> <a class=\"button\" onclick=\"jumpToPage();\">Submit</a> </div>");
     //$("pages")
+
+
+		//*****************
+		// Category Browse
+		//****************		
+		if(category_sort[sort_by] != null){
+			//CLear it
+			$("#quick_nav").show();
+			$("#category_browse").html("<ul>")
+			for(item in category_sort[sort_by]){
+				
+				$("#category_browse").append("<li>" + "<a href=\"#page=" + capitalise(sort_by) + ":" +  files[sort_by][category_sort[sort_by][item]] + "&type=sort&number=" + (parseInt(category_sort[sort_by][item])+1) + "\">" + (item) + "</a> " + "</li>")
+			}
+			$("#category_browse").append("</ul>")
+		}else{
+			$("#quick_nav").hide();
+		}
+		
 }
 
 function jumpToPage(){

@@ -145,15 +145,25 @@ public class Browsing {
 	 */
 	private void writeSortedFiles() throws IOException {
 		// TODO Write sortedLists to files to be read by AJAX website.
+		String[] category_sorts = options.get("category_browse").split(",");
+		String[] alphabet_sorts = options.get("alphabet_browse").split(",");
+		
 		boolean status = new File (options.get("site") + "javascripts/").mkdirs();
 		
 		File importFile = new File(options.get("site") + "javascripts/meta.js");
+		File categoryFile = new File(options.get("site") + "javascripts/categoryBrowse.js");
 		BufferedWriter writer1 = new BufferedWriter(new FileWriter(importFile));
+		BufferedWriter writer2 = new BufferedWriter(new FileWriter(categoryFile));
 		writer1.write("var files = new Array();");
-		writer1.newLine();		
+		writer1.newLine();
+		writer2.write("var category_sort = new Array();");
+		writer2.newLine();
 		
-		for( String key : sortedLists.keySet()){
-		  int filenum = 0;
+		for( String key : sortedLists.keySet()){  
+			int filenum = 0;
+			if(search_string_array(category_sorts,key) || search_string_array(alphabet_sorts,key)){
+				writer2.write("var " + key + "_category = new Array();\n");
+			}		
 			
 			System.out.println("Writing \"" + key + "\" file " + filenum);
 			
@@ -165,7 +175,9 @@ public class Browsing {
 			File outFile = new File(options.get("site") + "lists/" + key + filenum);
 			BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
 			
-			for(int i = 0; i < sortedLists.get(key).size(); i++){
+			String current = "*";
+			
+			for(int i = 0; i < sortedLists.get(key).size(); i++){				
 				/*
 				 * TODO : Count to 20 or so, then move into next file!
 				 */
@@ -180,9 +192,33 @@ public class Browsing {
 				}
 				writer.write(sortedLists.get(key).elementAt(i).name + ";" + sortedLists.get(key).elementAt(i).representation + ";" + sortedLists.get(key).elementAt(i).meta.get(key));
 				writer.write("\n");
+				
+				if(search_string_array(category_sorts,key)){
+					if(!sortedLists.get(key).elementAt(i).meta.get(key).equalsIgnoreCase(current)){
+						//If it is a new category
+						current = sortedLists.get(key).elementAt(i).meta.get(key);
+						//Insert the name of the category and the pagenumber.
+						writer2.write(key + "_category[\"" + current + "\"] = " + filenum + ";\n");
+					}
+					
+				}else if(search_string_array(alphabet_sorts,key)){
+					//Check the letter it starts with.
+					String startingLetter = "" + sortedLists.get(key).elementAt(i).meta.get(key).charAt(0);
+					String currentStartingLetter = "" + current.charAt(0);
+					if(!startingLetter.equalsIgnoreCase(currentStartingLetter)){
+						//If the category starts with a new letter.
+						current = sortedLists.get(key).elementAt(i).meta.get(key);
+						//Insert the name of the category and the pagenumber.
+						writer2.write(key + "_category[\"" + current.toUpperCase().charAt(0) + "\"] = " + filenum + ";\n");
+					}
+				}
+			
 			}
 			writer.close();
 			writer1.write("files[\""+ key + "\"] = " + key + ";\n");
+			if(search_string_array(category_sorts,key) || search_string_array(alphabet_sorts,key)){
+				writer2.write("category_sort[\"" + key + "\"] = " + key + "_category;\n");
+			}
 			System.out.println("\tdone.");
 		}
 		writer1.write("var version = " + options.get("version") + ";\n");
@@ -190,6 +226,7 @@ public class Browsing {
 		writer1.write("var pageSize = " + RECORDS_PER_FILE + ";\n");
 		writer1.write("var force_page_count = " + options.get("force_page_count") + ";\n");
 		writer1.close();
+		writer2.close();
 		
 	}
 
@@ -202,7 +239,8 @@ public class Browsing {
 	 writer.newLine();
 	 
 	 */
-	
+	 
+		
 
 	/*
 	 * Method to parse and XML file into a Document.
