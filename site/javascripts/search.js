@@ -6,6 +6,29 @@ var searchTerms;
 var pages       = 0;
 var currentPage = 0;
 
+var priorityQueue = function () {
+  // "private"
+  var priorityArray = [];
+
+  // "public"
+  return {
+    insert: function (name, priority) {
+      var i = 0;
+      while (i <= priorityArray.length && priority < ((priorityArray[i] || {"priority": Infinity}).priority || Infinity)) {                            
+        i++;
+      }                   
+      priorityArray.splice(i, 0, {"name": name, "priority": priority});
+      return true;            
+    },
+    get: function () {
+      return (priorityArray.shift() || {"name": undefined}).name;
+    },
+    peek: function () {
+      return (priorityArray[0] || {"name": undefined}).name;
+    }
+  };
+}();
+
 /* On DOM-Ready */
 $(function() {
   /* Load list of indices */
@@ -83,32 +106,37 @@ function find_real(string) {
     }
   }
   
-  var rescount  = 0;
+  var itemcount = 0;
+  for (item in items) {
+    itemcount++;
+    
+    var ln = parseInt(idsList[item]);
+    var sum = 0;
+    for (i = 0; i < items[item].length; i++) {
+      var count = items[item][i];
+      sum += count;
+    }
+    
+    var n = item.split(".metadata")[0];
+    var p = sum / (Math.sqrt(terms.length) * Math.sqrt(ln));
+    priorityQueue.insert(n, p);
+  }
+
   pages         = 1;
 	var result    = "<table id=\"page-1\">";
-  for (item in items) {
-    rescount++;
-    if (rescount % 10 == 0) {
+  for (i = 1; i <= itemcount; i++) {
+    if ((i - 1) % 10 == 0 && i > 10) {
       if (pages != 1)
         result += "</table>";
       pages = pages + 1;
       result += "<table id=\"page-" + pages + "\" style=\"display: none;\">";
     }
     
-    var sum = 0;
-    for (i = 0; i < items[item].length; i++) {
-      var count = items[item][i];
-      sum += count;
-    }
-    var ln = parseInt(idsList[item]);
-    items[item] = sum / (Math.sqrt(terms.length) * Math.sqrt(ln));
-    
-    var shortname = item.split(".metadata")[0];
-    result += "<tr><td><a href=\"data/" + shortname + "\" class=\"result\">" + shortname + "</a></td>";
-    // result += "<td>" + items[item] + "</td></tr>";
+    var n = priorityQueue.get();
+    result += "<tr><td><a href=\"data/" + n + "\" class=\"result\">" + n + "</a></td></tr>";
   }
-  result += "</table><div class=\"pagination\"></div>";
   
+  result += "</table><div class=\"pagination\"></div>";
   results(result);
   
   currentPage = 1;
@@ -245,3 +273,4 @@ function tapComplete(meta, word, searchString) {
 function results(results) {
   $("#search_results").html(results);
 }
+
