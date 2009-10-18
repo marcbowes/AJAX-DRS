@@ -5,3 +5,13 @@ div#wrapper {
 div#search_results ul {
   list-style: none;
 }
+
+input.jumper {
+                padding: 6px;
+                font-size: 13px;
+                background: #fff url('../images/bg-form-field.gif') top left repeat-x;
+                border: 1px solid #d5d5d5;
+        				color: #333;
+                width: 15% !important;
+                margin: 5px;
+                }
