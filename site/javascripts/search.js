@@ -44,7 +44,7 @@ $(function() {
     _list = list.split("\n");
     for (i = 0; i < _list.length; i++) {
       var attrs = _list[i].split(":");
-      idsList[attrs[1]] = attrs[2];
+      idsList[attrs[1]] = {"ln": attrs[2], "loc": attrs[3]};
     }
   }, "text");
   
@@ -110,14 +110,14 @@ function find_real(string) {
   for (item in items) {
     itemcount++;
     
-    var ln = parseInt(idsList[item]);
+    var ln = parseInt(idsList[item].ln);
     var sum = 0;
     for (i = 0; i < items[item].length; i++) {
       var count = items[item][i];
       sum += count;
     }
     
-    var n = item.split(".metadata")[0];
+    var n = item;
     var p = sum / (Math.sqrt(terms.length) * Math.sqrt(ln));
     priorityQueue.insert(n, p);
   }
@@ -133,7 +133,7 @@ function find_real(string) {
     }
     
     var n = priorityQueue.get();
-    result += "<tr><td><a href=\"data/" + n + "\" class=\"result\">" + n + "</a></td></tr>";
+    result += "<tr><td><a href=\"data/" + idsList[n].loc.split("/site/data/")[1].split(".metadata")[0] + "\" class=\"result\">" + n.split(".metadata")[0] + "</a></td></tr>";
   }
   
   result += "</table><div class=\"pagination\"></div>";

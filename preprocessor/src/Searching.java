@@ -123,7 +123,7 @@ public class Searching {
       for (Integer accumulation : accumulater.values()) {
         length += Math.pow(accumulation.intValue(), 2);
       }
-      ids.write(length + "\n");
+      ids.write(length + ":" + file.getAbsolutePath() + "\n");
       return true;
     } catch (Exception e) {
       System.err.println("Unable to create index for \"" + filename + "\" -- " + e);
