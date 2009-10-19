@@ -300,7 +300,11 @@ function loadSort(file, sort_by){
 			pages.push(max);
 		}
 		
-
+		if(current_page != 1){
+			//previous page
+			$("#pages").append("<a class=\"number\" href=\"#page=" + capitalise(sort_by) + ":" +  files[sort_by][parseInt(current_page)-2] + "&type=sort&number=" + (parseInt(current_page)-1) + "\">Previous</a> ");
+		}
+				
 		for(i = 0; i < pages.length; i++){
 			page = parseInt(pages[i]);
 			if(page == current_page){
@@ -315,6 +319,11 @@ function loadSort(file, sort_by){
 			if(page != max && (parseInt(pages[i+1])) != (page+1)){
 				$("#pages").append(". . . ");
 			}
+		}
+		
+		if(current_page != max){
+			//next page
+			$("#pages").append("<a class=\"number\" href=\"#page=" + capitalise(sort_by) + ":" +  files[sort_by][parseInt(current_page)] + "&type=sort&number=" + (parseInt(current_page)+1) + "\">Next</a> ");
 		}
 		
 		/*

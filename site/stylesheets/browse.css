@@ -14,13 +14,15 @@
 								margin: 0px 3px 0px 0px;
 							}
 .button{
-	margin: 0px 3px 0px 0px;
+	margin: 3px 3px 0px 0px;
 }
 
 .column-right {
-                width: 20%;
-								height: 600px;
+                width: 33%;
                 float: left;
 								margin-left: 10px;
-								overflow:scroll
                 }
+
+.column-left{
+	width: 63%;
+}

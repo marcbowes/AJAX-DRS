@@ -147,6 +147,7 @@ def caljaxize()
          o.category = p.story.category.name unless (p.story.nil? || p.story.category.nil?)
          o.keywords = p.story.keywords.uniq.join(" ") unless (p.story.nil? || p.story.keywords.blank?)
          o.subkeywords = p.story.subkeywords.uniq.join(" ") unless (p.story.nil? || p.story.subkeywords.blank?)
+         o.summary
          
          File.open("../site/data/#{c.name}/#{b.name}/#{o.name}.metadata", 'w') {|f| f.write(o.to_xml) }
          File.open("../site/data/#{c.name}/#{b.name}/#{o.name}", 'w') {|f| f.write("Stub file for #{o.name}") }
@@ -250,6 +251,7 @@ class Story < ActiveRecord::Base
   # - storypages:string
   # - keywords:text
   # - subkeywords:text
+  # - summary:text
   # - collection:references
   # - category:references
   # - author:references
@@ -324,6 +326,7 @@ class CreateTables < ActiveRecord::Migration
       t.string :story #page->story->title
       t.string :author #page->story->authors
       t.string :category #page->story->categories
+      t.text :summary #page->story->summary
       
       
       t.text :keywords #page->story->keywords
