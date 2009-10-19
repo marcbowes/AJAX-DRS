@@ -133,7 +133,8 @@ function find_real(string) {
     }
     
     var n = priorityQueue.get();
-    result += "<tr><td><a href=\"data/" + idsList[n].loc.split("/site/data/")[1].split(".metadata")[0] + "\" class=\"result\">" + n.split(".metadata")[0] + "</a></td></tr>";
+    result += "<tr><td><a href=\"data/" + idsList[n].loc.split("/site/data/")[1].split(".metadata")[0] +
+      "\" class=\"result\">" + n.split(".metadata")[0] + "</a></td><td class=\"representation\"></td></tr>";
   }
   
   result += "</table><div class=\"pagination\"></div>";
@@ -234,6 +235,14 @@ function showPagination()
     e = jQuery.Event("keypress"); e.keyCode = 13;
     $("#search_results .pagination .jumper").trigger(e);
     return false;
+  });
+  
+  /* Show representation */
+  $("#search_results #page-" + currentPage + " tr").each(function() {
+    var row = this;
+    $.get($(this).find(".result").attr("href") + ".metadata", null, function(xml) {
+      $(row).find(".representation").html($('collection', xml).text() + "<br /><i>" + $('story', xml).text() + "</i>");
+    }, 'xml');
   });
 }
 
