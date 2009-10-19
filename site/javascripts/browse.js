@@ -449,7 +449,7 @@ function display(node){
     print+=("<ul>");
     for(var i = 0; i < node.childNodes.length; i++){
         if(node.childNodes[i].nodeType == 1){            
-						if(node.childNodes[i].childNodes[0].nodeValue != null && node.childNodes[i].childNodes[0].nodeValue.replace(/\n/g, "").replace(/\s/g, "").length > 0){
+						if(node.childNodes[i].childNodes[0] != null && node.childNodes[i].childNodes[0].nodeValue != null && node.childNodes[i].childNodes[0].nodeValue.replace(/\n/g, "").replace(/\s/g, "").length > 0){
                 print+=("<li><b>" + node.childNodes[i].nodeName + "</b> : " + node.childNodes[i].childNodes[0].nodeValue + "</li>")
             }else{
                 print+=("<li><b>" + node.childNodes[i].nodeName + "</b> : ");

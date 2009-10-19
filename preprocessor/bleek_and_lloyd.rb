@@ -147,7 +147,7 @@ def caljaxize()
          o.category = p.story.category.name unless (p.story.nil? || p.story.category.nil?)
          o.keywords = p.story.keywords.uniq.join(" ") unless (p.story.nil? || p.story.keywords.blank?)
          o.subkeywords = p.story.subkeywords.uniq.join(" ") unless (p.story.nil? || p.story.subkeywords.blank?)
-         o.summary
+         o.summary = p.story.summary unless p.story.nil?
          
          File.open("../site/data/#{c.name}/#{b.name}/#{o.name}.metadata", 'w') {|f| f.write(o.to_xml) }
          File.open("../site/data/#{c.name}/#{b.name}/#{o.name}", 'w') {|f| f.write("Stub file for #{o.name}") }
