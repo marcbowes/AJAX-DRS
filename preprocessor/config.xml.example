@@ -1,8 +1,11 @@
 <root>
-	<version>2009-10-12</version>
-	<representation>title,date,blarg</representation>
+	<version>2009-10-12 20:00</version>
+	<representation>story,name</representation>
+	<do_not_browse>keywords,subkeywords,summary</do_not_browse>
+	<category_browse>book,story,collection,category</category_browse>
+	<alphabet_browse>name</alphabet_browse>
 	<data>../site/data/</data>
 	<site>../site/</site>
 	<items_per_page>10</items_per_page>
-	<force_page_count>true<force_page_count>
+	<force_page_count>false</force_page_count>
 </root>
