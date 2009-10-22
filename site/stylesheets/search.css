@@ -15,3 +15,7 @@ input.jumper {
                 width: 15% !important;
                 margin: 5px;
               }
+
+.timing {
+                float: right;
+                }

@@ -43,7 +43,7 @@ public class Searching {
         
         i++;
         ids.write(i + ":" + file.getName() + ":");
-        indexFile(file);
+        indexFile(file, i);
       }
     }
     
@@ -59,7 +59,7 @@ public class Searching {
     idx.close();
   }
   
-  private boolean indexFile(File file) {
+  private boolean indexFile(File file, int id) {
     String filename = file.getName();
     
     try {
@@ -104,8 +104,8 @@ public class Searching {
             word = s.toString();
             
             /* index */
-            indexWord("__root__", word, filename);
-            indexWord(metafield, word, filename);
+            indexWord("__root__", word, id);
+            indexWord(metafield, word, id);
             
             /* accumulate */
             Integer accumulation;
@@ -132,7 +132,7 @@ public class Searching {
     }
   }
   
-  public void indexWord(String metafield, String word, String filename) {
+  public void indexWord(String metafield, String word, int id) {
     HashMap<String, Integer> documentToCount;
     if(index.get(metafield).containsKey(word)) {
       documentToCount = index.get(metafield).get(word);
@@ -142,13 +142,13 @@ public class Searching {
     }
     
     Integer count;
-    if(documentToCount.containsKey(filename)) {
-      count = documentToCount.get(filename);
+    if(documentToCount.containsKey(id + "")) {
+      count = documentToCount.get(id + "");
     } else {
       count = Integer.valueOf(0);
     }
     count = Integer.valueOf(count.intValue() + 1);
-    documentToCount.put(filename, count);
+    documentToCount.put(id + "", count);
   }
   
   private void saveIndex() {
@@ -163,7 +163,7 @@ public class Searching {
       try {
         File _file = new File(options.get("site") + "indices/" + (metafield == "__root__" ? "" : metafield));
         _file.mkdirs();
-        BufferedWriter file = new BufferedWriter(new FileWriter(_file + "/" + word));
+        BufferedWriter file = new BufferedWriter(new FileWriter(_file + "/" + word + ".idx"));
         HashMap<String, Integer> documentToCount = index.get(metafield).get(word);
         for (String filename : documentToCount.keySet()) {
           file.write(filename + ":" + documentToCount.get(filename) + "\n");
