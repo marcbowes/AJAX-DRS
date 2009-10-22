@@ -397,7 +397,7 @@ function jumpToPage(){
 function loadMeta(metafile, locality){
     $("#pages").html("");
 		if(locality == "offline"){    
-			$("#browse-results").html("<h2>" + metafile + "</h2></br/>");		
+			$("#browse-results").html("<h2>" + metafile.substring(0,metafile.length-9) + "</h2></br/>");		
 			$.get("data/" + metafile, null, function(meta){
 	        var xmlobject = parseXML(meta);
         
