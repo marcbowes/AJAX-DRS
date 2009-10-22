@@ -85,6 +85,7 @@ function fetchData(){
 			//*********************************************************************
 			//Now build the number of extra pages needed to fit all the new data.
 			//*********************************************************************
+			if(force_page_count){
 			for(file in files){
 				var lastPage = files[file][files[file].length-1];
 				
@@ -107,6 +108,7 @@ function fetchData(){
 					}
 					extraPages[file] = tempExtraPages;
 				}
+			}
 			}
 			
 			document.getElementById("busy").style.display = "none";

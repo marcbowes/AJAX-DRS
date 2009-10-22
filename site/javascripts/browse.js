@@ -155,6 +155,8 @@ function createCombinedList(file, sort_by){
 	Need to work out which files are needed, then build those lists and take what is needed from each.
 */
 function loadSort(file, sort_by){
+		var startTime = new Date().getTime();
+	
 		for(durr in files){
 			if(durr == uncapitalise(sort_by)){
 				$("#" + durr).removeClass("button").addClass("button-selected");
@@ -357,15 +359,18 @@ function loadSort(file, sort_by){
 			//CLear it
 			$("#quick_nav").show();
 			$("#category_browse").html("<ul>")
-			for(item in category_sort[sort_by]){
+			for(thing in category_sort[sort_by]){
 				
-				$("#category_browse").append("<li>" + "<a href=\"#page=" + capitalise(sort_by) + ":" +  files[sort_by][category_sort[sort_by][item]] + "&type=sort&number=" + (parseInt(category_sort[sort_by][item])+1) + "\">" + (item) + "</a> " + "</li>")
+				$("#category_browse").append("<li>" + "<a href=\"#page=" + capitalise(sort_by) + ":" +  files[sort_by][category_sort[sort_by][thing]] + "&type=sort&number=" + (parseInt(category_sort[sort_by][thing])+1) + "\">" + (thing) + "</a> " + "</li>")
 			}
 			$("#category_browse").append("</ul>")
 		}else{
 			$("#quick_nav").hide();
 		}
 		
+		var endTime = new Date().getTime();
+		
+		//alert((endTime - startTime)/1000.0);
 }
 
 function jumpToPage(){

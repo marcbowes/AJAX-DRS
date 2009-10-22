@@ -31,12 +31,14 @@ public class Browsing {
 		this.options = options;
 		RECORDS_PER_FILE = Integer.parseInt(options.get("items_per_page"));
 		System.out.println("Begin");
+		long start = System.currentTimeMillis();
 		files = new Vector<Meta>();
 		sortedLists = new HashMap <String,Vector<Meta>>();
 		readMetaFiles(options.get("path"));
 		sortMetaFiles();
-		writeSortedFiles();
-		System.out.println("End");
+		writeSortedFiles();		
+		long end = System.currentTimeMillis();
+		System.out.println("End: Time Taken: " + (end - start)/1000.0 + " seconds");
 	}
 	
 	/*
