@@ -81,7 +81,7 @@ function createCombinedList(file, sort_by){
 				if(!force_page_count || onlineMetaFiles[i][uncapitalise(sort_by)] != null){
 					//if its in this file.
 					if(!force_page_count || onlineMetaFiles[i][uncapitalise(sort_by)] == file){
-						if(onlineMetaFiles[i]["file"].getElementsByTagName(uncapitalise(sort_by))[0] != null){
+						if(onlineMetaFiles[i]["file"].getElementsByTagName(uncapitalise(sort_by))[0] != null && onlineMetaFiles[i]["file"].getElementsByTagName(uncapitalise(sort_by))[0].childNodes[0]){
 							var field_value = onlineMetaFiles[i]["file"].getElementsByTagName(uncapitalise(sort_by))[0].childNodes[0].nodeValue;
 							//alert(field_value);
 							var metafile = new Array();
@@ -414,7 +414,7 @@ function loadMeta(metafile, locality){
 			Will use this to access and display the data.
 			*/
 			var file = onlineMetaFiles[metafile]["file"].getElementsByTagName("link");
-			if(file != null){
+			if(file != null && file[0] != null){
 				$("#browse-results").html("<h2>" + file[0].childNodes[0].nodeValue + "</h2></br/>");				
 			}else{
 				$("#browse-results").html("<h2> Unkown file </h2></br/>");				
@@ -422,10 +422,10 @@ function loadMeta(metafile, locality){
 			print = "";
 			display(onlineMetaFiles[metafile]["file"]);
 			$("#browse-results").append(print);
-			if(file != null){
+			if(file != null && file[0] != null){
 				$("#browse-results").append("<a href=\"" + file[0].childNodes[0].nodeValue + "\">Open source file</a>")
 			}else{
-				$("#browse-results").html("<a> No link to file </a>");				
+				$("#browse-results").append("<a> No link to file </a>");				
 			}
 		}
 }

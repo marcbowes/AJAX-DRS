@@ -1,26 +1,38 @@
 <root>
 	<file>
-		<name>0000 test 2</name>
-		<link>http://www.blizzard.com</link>
-		<title>AOnline Test data 1</title>
-	  <subject>Online Test Data</subject>
-	  <description>This is the first piece of online test data.</description>
-	  <date>2001-01-01</date>		
-	  <subnotes>
-	    <subnote>Stuff</subnote>
-	    <subnote>More Stuff</subnote>
-	  </subnotes>
+		<author>Piet Lynx</author>
+	  <book>MP1</book>
+	  <category nil="true"></category>
+	  <collection>Lucy Lloyd Kora notebooks</collection>
+	  <date>11 June</date>
+	  <keywords>Kora Englishman Korannas Kafir Boer Bastard Orlam</keywords>
+	  <name>MP1_090.JPG</name>
+	  <story>All came out of one hole</story>
+	  <subkeywords>story of how all came out one hole</subkeywords>
+	  <summary>Very little of this story has been translated. 'the living things which move about in the world. all came out of one hole': Kafirs, Englishmen, !koranna, Boers, Bastards, Orlams, Bushmen all 'passed out' (through the hole, presumably). The rest is harder </summary>
 	</file>
 	<file>
-		<name>000 test 1</name>
-		<link>http://www.google.com</link>
-		<title>ZOnline Test Data 2</title>
-	  <subject>Online Test Data</subject>
-	  <description>This is the tenth piece of test data.</description>
-	  <date>2002-02-02</date>		
-	  <subnotes>
-	    <subnote>Stuff</subnote>
-	    <subnote>More Stuff</subnote>
-	  </subnotes>
+		<author>Piet Lynx</author>
+	  <book>MP1</book>
+	  <category nil="true"></category>
+	  <collection>Lucy Lloyd Kora notebooks</collection>
+	  <date>11 June</date>
+	  <keywords>Kora Englishman Korannas Kafir Boer Bastard Orlam</keywords>
+	  <name>MP1_091.JPG</name>
+	  <story>All came out of one hole</story>
+	  <subkeywords>story of how all came out one hole</subkeywords>
+	  <summary>Very little of this story has been translated. 'the living things which move about in the world. all came out of one hole': Kafirs, Englishmen, !koranna, Boers, Bastards, Orlams, Bushmen all 'passed out' (through the hole, presumably). The rest is harder </summary>
+	</file>
+	<file>
+		<author>Piet Lynx</author>
+	  <book>MP1</book>
+	  <category nil="true"></category>
+	  <collection>Lucy Lloyd Kora notebooks</collection>
+	  <date>11 June</date>
+	  <keywords>Kora Englishman Korannas Kafir Boer Bastard Orlam</keywords>
+	  <name>MP1_087.JPG</name>
+	  <story>All came out of one hole</story>
+	  <subkeywords>story of how all came out one hole</subkeywords>
+	  <summary>Very little of this story has been translated. 'the living things which move about in the world. all came out of one hole': Kafirs, Englishmen, !koranna, Boers, Bastards, Orlams, Bushmen all 'passed out' (through the hole, presumably). The rest is harder </summary>
 	</file>
 </root>
