@@ -5,6 +5,7 @@ var untappedIndices = 0;
 var searchTerms;
 var pages       = 0;
 var currentPage = 0;
+var startTime;
 
 var priorityQueue = function () {
   // "private"
@@ -44,7 +45,7 @@ $(function() {
     _list = list.split("\n");
     for (i = 0; i < _list.length; i++) {
       var attrs = _list[i].split(":");
-      idsList[attrs[1]] = {"ln": attrs[2], "loc": attrs[3]};
+      idsList[attrs[0]] = {"name": attrs[1], "ln": attrs[2], "loc": attrs[3]};
     }
   }, "text");
   
@@ -71,6 +72,7 @@ function get_terms(string) {
 }
 
 function find(string) {
+  startTime = (new Date()).getTime();
   string = string.toLowerCase();
   var terms = get_terms(string);
   
@@ -134,10 +136,13 @@ function find_real(string) {
     
     var n = priorityQueue.get();
     result += "<tr><td><a href=\"data/" + idsList[n].loc.split("/site/data/")[1].split(".metadata")[0] +
-      "\" class=\"result\">" + n.split(".metadata")[0] + "</a></td><td class=\"representation\"></td></tr>";
+      "\" class=\"result\">" + idsList[n].name.split(".metadata")[0] + "</a></td><td class=\"representation\"></td></tr>";
   }
   
   result += "</table><div class=\"pagination\"></div>";
+  result += "<div class=\"timing\"><small>Search took ";
+  time = (new Date()).getTime() - startTime;
+  result += time + "ms</small></div>";
   results(result);
   
   currentPage = 1;
@@ -249,7 +254,7 @@ function showPagination()
 function tapIndex(meta, word, searchString) {
   if (!indices[meta] || !indices[meta][word]) {
     try {
-      $.get("indices/" + (meta == "" ? "" : meta + "/") + word, null, function(index) {
+      $.get("indices/" + (meta == "" ? "" : meta + "/") + word + ".idx", null, function(index) {
         var listings = index.split("\n");
         var index = new Array();
         for (i = 0; i < listings.length; i++) {
