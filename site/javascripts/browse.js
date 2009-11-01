@@ -113,7 +113,7 @@ function createCombinedList(file, sort_by){
 							var inserted = false;
 							for(j = 0; j < combinedList.length; j++){							
 								//Need to make sure that it is bigger than the previous entry.
-								if(combinedList[j]["sorted_field"] > field_value){
+								if(combinedList[j]["sorted_field"] >= field_value){
 									if(prev_metas == null){				
 										combinedList.splice(j,0,metafile);
 										inserted = true;
@@ -369,6 +369,7 @@ function loadSort(file, sort_by){
 		}
 		
 		var endTime = new Date().getTime();
+		$("#load").html("Loaded in: " + ((endTime - startTime)/1000.0) + " seconds");
 		
 		//alert((endTime - startTime)/1000.0);
 }
